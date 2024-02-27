@@ -1,9 +1,8 @@
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import User, PermissionsMixin, Group, Permission
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin, Group, Permission, BaseUserManager
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
+
 
 # Kashish
 class CustomUser(AbstractUser):
@@ -43,184 +42,6 @@ class CustomUser(AbstractUser):
     def str(self):
         return str(self.first_name)
 
-# def InstitutionChoices():
-#     universities = [
-#         ("UOW", "University of Windsor"),
-#         ("UBC", "University of British Columbia"),
-#         ("SFU", "Simon Fraser University"),
-#         ("UCalgary", "University of Calgary"),
-#         ("UV", "University of Victoria"),
-#         ("UofT", "University of Toronto"),
-#         ("UW", "University of Waterloo"),
-#         ("UA", "University of Alberta"),
-#         ("Q", "Queen’s University"),
-#         ("UofM", "University of Manitoba"),
-#         ("UQAM", "Université du Québec à Montréal"),
-#         ("UofS", "University of Saskatchewan"),
-#         ("UofN", "University of New Brunswick"),
-#         ("UdeS", "Université de Sherbrooke"),
-#         ("WLU", "Wilfrid Laurier University"),
-#         ("UofR", "University of Regina"),
-#         ("EPMT", "École Polytechnique de Montréal"),
-#         ("UofL", "University of Lethbridge"),
-#         ("UofW", "The University of Winnipeg"),
-#         ("UQ", "Université de Montréal"),
-#         ("UofH", "McMaster University"),
-#         ("TU", "Toronto Metropolitan University"),
-#         ("UO", "University of Ottawa"),
-#         ("UofG", "University of Guelph"),
-#         ("Concordia", "Concordia University"),
-#         ("Dalhousie", "Dalhousie University"),
-#         ("Acadia", "Acadia University"),
-#         ("Lakehead", "Lakehead University"),
-#         ("Otech", "Ontario Tech University"),
-#         ("TRU", "Thompson Rivers University"),
-#         ("VIV", "Vancouver Island University"),
-#         ("ETS", "École de Technologie Supérieure"),
-#         ("UPEI", "University of Prince Edward Island"),
-#         ("OCAD", "OCAD University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University"),
-#         ("UduQAT", "Université du Québec en Abitibi-Témiscamingue"),
-#         ("Au", "Algoma University"),
-#         ("YU", "Yorkville University"),
-#         ("STU", "St. Thomas University"),
-#         ("ENAP", "École Nationale d'Administration Publique"),
-#         ("USB", "Université de Saint-Boniface"),
-#         ("CUE", "Concordia University of Edmonton"),
-#         ("NSCAD", "NSCAD University"),
-#         ("Ru", "Redeemer University"),
-#         ("UCanWest", "University Canada West"),
-#         ("UofKC", "University of King's College"),
-#         ("CU", "Canadian Mennonite University"),
-#         ("KU", "The King's University"),
-#         ("AU", "Ambrose University"),
-#         ("USA", "Université Sainte-Anne"),
-#         ("FNU", "First Nations University of Canada"),
-#         ("QUC", "Quest University Canada"),
-#         ("BU", "Brandon University"),
-#         ("BSU", "Bishop's University"),
-#         ("UduQO", "Université du Québec en Outaouais"),
-#         ("NSU", "Nipissing University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University"),
-#         ("UduQAT", "Université du Québec en Abitibi-Témiscamingue"),
-#         ("Au", "Algoma University"),
-#         ("YU", "Yorkville University"),
-#         ("STU", "St. Thomas University"),
-#         ("ENAP", "École Nationale d'Administration Publique"),
-#         ("USB", "Université de Saint-Boniface"),
-#         ("CUE", "Concordia University of Edmonton"),
-#         ("NSCAD", "NSCAD University"),
-#         ("Ru", "Redeemer University"),
-#         ("UCanWest", "University Canada West"),
-#         ("UofKC", "University of King's College"),
-#         ("CU", "Canadian Mennonite University"),
-#         ("KU", "The King's University"),
-#         ("AU", "Ambrose University"),
-#         ("USA", "Université Sainte-Anne"),
-#         ("FNU", "First Nations University of Canada"),
-#         ("QUC", "Quest University Canada"),
-#         ("BU", "Brandon University"),
-#         ("BSU", "Bishop's University"),
-#         ("UduQO", "Université du Québec en Outaouais"),
-#         ("NSU", "Nipissing University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University"),
-#         ("UduQAT", "Université du Québec en Abitibi-Témiscamingue"),
-#         ("Au", "Algoma University"),
-#         ("YU", "Yorkville University"),
-#         ("STU", "St. Thomas University"),
-#         ("ENAP", "École Nationale d'Administration Publique"),
-#         ("USB", "Université de Saint-Boniface"),
-#         ("CUE", "Concordia University of Edmonton"),
-#         ("NSCAD", "NSCAD University"),
-#         ("Ru", "Redeemer University"),
-#         ("UCanWest", "University Canada West"),
-#         ("UofKC", "University of King's College"),
-#         ("CU", "Canadian Mennonite University"),
-#         ("KU", "The King's University"),
-#         ("AU", "Ambrose University"),
-#         ("USA", "Université Sainte-Anne"),
-#         ("FNU", "First Nations University of Canada"),
-#         ("QUC", "Quest University Canada"),
-#         ("BU", "Brandon University"),
-#         ("BSU", "Bishop's University"),
-#         ("UduQO", "Université du Québec en Outaouais"),
-#         ("NSU", "Nipissing University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University"),
-#         ("UduQAT", "Université du Québec en Abitibi-Témiscamingue"),
-#         ("Au", "Algoma University"),
-#         ("YU", "Yorkville University"),
-#         ("STU", "St. Thomas University"),
-#         ("ENAP", "École Nationale d'Administration Publique"),
-#         ("USB", "Université de Saint-Boniface"),
-#         ("CUE", "Concordia University of Edmonton"),
-#         ("NSCAD", "NSCAD University"),
-#         ("Ru", "Redeemer University"),
-#         ("UCanWest", "University Canada West"),
-#         ("UofKC", "University of King's College"),
-#         ("CU", "Canadian Mennonite University"),
-#         ("KU", "The King's University"),
-#         ("AU", "Ambrose University"),
-#         ("USA", "Université Sainte-Anne"),
-#         ("FNU", "First Nations University of Canada"),
-#         ("QUC", "Quest University Canada"),
-#         ("BU", "Brandon University"),
-#         ("BSU", "Bishop's University"),
-#         ("UduQO", "Université du Québec en Outaouais"),
-#         ("NSU", "Nipissing University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University"),
-#         ("UduQAT", "Université du Québec en Abitibi-Témiscamingue"),
-#         ("Au", "Algoma University"),
-#         ("YU", "Yorkville University"),
-#         ("STU", "St. Thomas University"),
-#         ("ENAP", "École Nationale d'Administration Publique"),
-#         ("USB", "Université de Saint-Boniface"),
-#         ("CUE", "Concordia University of Edmonton"),
-#         ("NSCAD", "NSCAD University"),
-#         ("Ru", "Redeemer University"),
-#         ("UCanWest", "University Canada West"),
-#         ("UofKC", "University of King's College"),
-#         ("CU", "Canadian Mennonite University"),
-#         ("KU", "The King's University"),
-#         ("AU", "Ambrose University"),
-#         ("USA", "Université Sainte-Anne"),
-#         ("FNU", "First Nations University of Canada"),
-#         ("QUC", "Quest University Canada"),
-#         ("BU", "Brandon University"),
-#         ("BSU", "Bishop's University"),
-#         ("UduQO", "Université du Québec en Outaouais"),
-#         ("NSU", "Nipissing University"),
-#         ("MSVU", "Mount Saint Vincent University"),
-#         ("UQAR", "Université du Québec à Rimouski"),
-#         ("ECD", "Emily Carr University of Art and Design"),
-#         ("RMC", "Royal Military College of Canada"),
-#         ("CapU", "Capilano University"),
-#         ("CBU", "Cape Breton University")
-#     ]
 
 class Institute(models.Model):
     INSTITUTE_TYPE = [
@@ -230,7 +51,6 @@ class Institute(models.Model):
     name = models.TextField()
     type = models.IntegerField(default=0, choices=INSTITUTE_TYPE)
     address = models.TextField()
-
 
 
 class StudentUser(CustomUser):
@@ -245,6 +65,7 @@ class StudentUser(CustomUser):
     def str(self):
         return f"Student Profile - {self.institute}"
 
+
 class OwnerUser(CustomUser):
     '''
         This model contains all the information of owner and inherit properties of user
@@ -256,7 +77,41 @@ class OwnerUser(CustomUser):
     ]
 
     identification = models.FileField(upload_to='documents/owner/identifications/')
-    occupation = models.CharField(max_length=255, choices=OCCUPATION_TYPES)
+    occupation = models.IntegerField(default=0, choices=OCCUPATION_TYPES)
 
     def str(self):
         return f"Property Owner Profile - {self.first_name}"
+
+
+class Property(models.Model):
+    PROPERTY_TYPES = [
+        ('apartment', 'Apartment'),
+        ('house', 'House'),
+        ('condo', 'Condo'),
+    ]
+    AVAILABILITY_STATUS = [
+        ('available', 'Available'),
+        ('not_available', 'Not Available'),
+        ('coming_soon', 'Coming Soon'),
+    ]
+
+    title = models.CharField(max_length=255)
+    address = models.TextField()
+    property_type = models.CharField(max_length=50, choices=PROPERTY_TYPES)
+    number_of_bedrooms = models.IntegerField()
+    number_of_bathrooms = models.IntegerField()
+    amenities = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    availability_status = models.CharField(max_length=50, choices=AVAILABILITY_STATUS)
+    available_from = models.DateTimeField(default=timezone.now)
+    available_to = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_biddable = models.BooleanField(default=True)
+    bidding_min_limit = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+    def __str__(self):
+        return self.title
+
+
+
