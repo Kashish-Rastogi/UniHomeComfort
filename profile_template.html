@@ -1,0 +1,60 @@
+<!-- profile_template.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}CodingDung | Profile{% endblock %}
+
+{% block content %}
+    <h2 class="mt-4 mb-4">User Profile</h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Sidebar with links or additional information -->
+            <!-- You can customize this part based on your needs -->
+        </div>
+
+        <div class="col-md-9">
+            <!-- Main content area -->
+
+            <h4 class="font-weight-bold py-3 mb-4">
+                Account settings
+            </h4>
+
+            <!-- Include the user profile information here -->
+            <div class="card overflow-hidden">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <p>{{ user_profile.username }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <p>{{ user_profile.name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <p>{{ user_profile.email }}</p>
+                    </div>
+                    <!-- Add more profile fields as needed -->
+                </div>
+            </div>
+
+            <!-- Include the form for updating the profile -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Update Profile</h5>
+                    <form method="post" action="{% url 'UProfile:update_profile' %}">
+                        {% csrf_token %}
+                        <!-- Include form fields for updating the profile -->
+                        <!-- You can customize this part based on your needs -->
+                        <div class="form-group">
+                            <label for="new_field">New Field:</label>
+                            <input type="text" class="form-control" id="new_field" name="new_field" value="">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
