@@ -14,3 +14,27 @@ It is an online platform designed to cater to the needs of international student
 * Parth Patel
 * Hetansh Joshi
 * Muhammad Haseeb Ahmad
+
+## Sprint Work
+### Sprint 1 (Feb 5th - 19th):
+* **Documentation & flow chart:** Tanvi & Parth
+* **Project Setup and Research about property documents & colleges and Universities:** Hetansh & Haseeb
+* **UI/UX Design:** Jainam, Kashish
+* **Create Models:**
+    * User, Institue - Kashish
+    * Bid - Tanvi
+    * Property - Jainam
+    * Forum - Parth
+    * Document - Hetansh
+    * Property - Haseeb
+
+### Sprint 2 (Feb 20th - Mar 10th):
+* **Views Creation**
+  * **User Authentication System:** Kashish, Tanvi
+  * **User Registration & Login:** Tanvi, Parth
+  * **Property Listings & Details:** Kashish, Jainam
+  * **Add Property & Bidding:** Haseeb, Hetansh
+  * **Community Form:** Parth
+  * **User Profile:** Haseeb
+
+
