@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import StudentUser, OwnerUser, Institute, Property, Bidding
+from .models import StudentUser, OwnerUser, Institute, Property, Bidding, Forum
 
 admin.site.register(StudentUser)
 admin.site.register(OwnerUser)
 admin.site.register(Institute)
 admin.site.register(Property)
 admin.site.register(Bidding)
+admin.site.register(Forum)

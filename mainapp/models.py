@@ -148,3 +148,13 @@ class Bidding(models.Model):
 
 class Meta:
     ordering = ['-timestamp']
+
+class Forum(models.Model):
+    student = models.ForeignKey(StudentUser, on_delete=models.CASCADE)
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank= True, null=True)
+    is_answered = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
