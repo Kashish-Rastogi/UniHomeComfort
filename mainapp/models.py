@@ -115,3 +115,36 @@ class Property(models.Model):
 
 
 
+# Tanvi:
+class Bidding(models.Model):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    time = models.DateTimeField(default=timezone.now)
+    bidding_status = models.CharField(max_length=100,
+                                      choices=[('pending', 'Pending'), ('accepted', 'Accepted'),
+                                               ('rejected', 'Rejected')])
+    payment_status = models.CharField(max_length=50,
+                                      choices=[('pending', 'Pending'), ('paid', 'Paid'), ('failed', 'Failed')])
+    bidding_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    payment_transaction_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.property.title
+
+
+    # def make_payment(self):
+        # Integrate with a payment gateway and update is_paid accordingly
+        # For example, if using Stripe:
+        # stripe_response = stripe.PaymentIntent.create(
+        #     amount=int(self.bid_amount * 100),  # Convert to cents
+        #     currency='usd',  # Change to your currency
+        #     payment_method='pm_card_visa',  # Replace with the actual payment method
+        #     confirmation_method='manual',
+        # )
+        # if stripe_response.status == 'succeeded':
+        #     self.is_paid = True
+        #     self.save()
+
+
+class Meta:
+    ordering = ['-timestamp']
