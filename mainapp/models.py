@@ -158,3 +158,47 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# Muhammad Haseeb Ahmad
+class Property(models.Model):
+    PROPERTY_TYPES = [
+        ('apartment', 'Apartment'),
+        ('house', 'House'),
+        ('condo', 'Condo'),
+    ]
+    AVAILABILITY_STATUS = [
+        ('available', 'Available'),
+        ('not_available', 'Not Available'),
+        ('coming_soon', 'Coming Soon'),
+    ]
+
+    title = models.CharField(max_length=255)
+    address = models.TextField()
+    property_type = models.CharField(max_length=50, choices=PROPERTY_TYPES)
+    number_of_bedrooms = models.IntegerField()
+    number_of_bathrooms = models.IntegerField()
+    amenities = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    availability_status = models.CharField(max_length=50, choices=AVAILABILITY_STATUS)
+    available_from = models.DateTimeField(default=timezone.now)
+    available_to = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_biddable = models.BooleanField(default=True)
+    bidding_min_limit = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Additional fields from your provided code
+    lease_required = models.BooleanField(default=True)
+    lease_duration = models.IntegerField(default=12)  # in month
+    allowed_lease_people = models.IntegerField(null=False, default=2)
+    rules = models.TextField(blank=True)
+    owner = models.ForeignKey(OwnerUser, on_delete=models.CASCADE, related_name='owner_name')
+    prop_image1 = models.FileField(upload_to='documents/property_images/')
+    prop_image2 = models.FileField(upload_to='documents/property_images/')
+    prop_image3 = models.FileField(upload_to='documents/property_images/')
+    prop_image4 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image5 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
+    house_build_date = models.DateField()
+
+    def __str__(self):
+        return self.title
