@@ -44,6 +44,9 @@ class CustomUser(AbstractUser):
 
 
 class Institute(models.Model):
+'''
+    This model contains if the user is in univeristy or college
+'''
     INSTITUTE_TYPE = [
         (0, "University"),
         (1, "College")
