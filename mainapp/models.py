@@ -24,6 +24,7 @@ class CustomUser(AbstractUser):
         ('SK', 'Saskatchewan'),
         ('YT', 'Yukon'),
     ]
+    GENDER=[('Female', 'Female'), ('Male', 'Male')]
 
     country_code = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)])
     mobile_no = models.IntegerField(validators=[MinValueValidator(1_000_000_000), MaxValueValidator(9_999_999_999)])
@@ -34,7 +35,7 @@ class CustomUser(AbstractUser):
     zip_code = models.CharField(max_length=7)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
-
+    gender = models.CharField(max_length=7, choices=GENDER, default='Female')
     # Specify unique related_name for groups and user_permissions
     groups = models.ManyToManyField(Group, blank=True, related_name='customuser_groups')
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='customuser_permissions')
@@ -44,9 +45,9 @@ class CustomUser(AbstractUser):
 
 
 class Institute(models.Model):
-'''
-    This model contains if the user is in univeristy or college
-'''
+    '''
+        This model contains if the user is in univeristy or college
+    '''
     INSTITUTE_TYPE = [
         (0, "University"),
         (1, "College")
