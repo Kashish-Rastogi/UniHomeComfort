@@ -67,28 +67,4 @@ class Migration(migrations.Migration):
             name='rules',
             field=models.TextField(blank=True),
         ),
-        migrations.CreateModel(
-            name='Forum',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=300)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('is_answered', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mainapp.studentuser')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='PropertyDocument',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('document_type', models.CharField(choices=[('title_deed', 'Title Deed'), ('lease_agreement', 'Lease Agreement'), ('utility_bill', 'Utility Bill'), ('building_approval_plan', 'Building Approval Plan'), ('occupancy_certificate', 'Occupancy Certificate')], max_length=50)),
-                ('document_image', models.ImageField(upload_to='documents/')),
-                ('description', models.TextField(blank=True)),
-                ('verification_status', models.BooleanField(default=False, help_text='True if the document has been verified')),
-                ('upload_date', models.DateField(auto_now_add=True)),
-                ('last_updated', models.DateTimeField(auto_now=True)),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='documents', to='mainapp.property')),
-            ],
-        ),
     ]
