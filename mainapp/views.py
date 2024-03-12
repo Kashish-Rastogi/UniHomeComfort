@@ -8,3 +8,6 @@ def landingpage(request):
 
 def loginpage(request):
     return render(request,'mainapp/login.html')
+
+def ownerdashboard(request):
+    return render(request,'mainapp/owner-dashboard.html')
