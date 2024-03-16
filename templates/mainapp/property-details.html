@@ -1,0 +1,100 @@
+{% extends 'mainapp/base.html' %}
+
+{% block body_block %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="property-details bg-white shadow overflow-hidden sm:rounded-lg mt-8">
+
+    <div class="relative">
+      <img src="{{ property.hero_image.url }}" alt="Property Image" class="w-full h-64 object-cover">
+      <div class="absolute inset-0 bg-gradient-to-r from-gray-100 to-transparent opacity-50"></div>
+      <div class="absolute inset-y-bottom-10 px-4 py-2 sm:px-6 text-center">
+        <h2 class="text-3xl leading-9 font-extrabold text-white shadow-md">
+          {{ property.address }}
+        </h2>
+        <p class="mt-2 text-lg leading-6 text-white shadow-md">
+          {{ property.short_description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Details
+      </h3>
+      <dl class="mt-4 grid grid-cols-1 gap-x-4 sm:grid-cols-3 sm:gap-y-8">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">
+            Address
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ property.address }} ({{ property.street_address }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }})
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">
+            Full Name
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ property.owner.get_full_name }} ({{ owner.first_name }} {{ owner.last_name }})
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">
+            Square Footage
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ property.square_footage }} sq ft
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">
+            Bedrooms
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ property.bedrooms }}
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">
+            Bathrooms
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ property.bathrooms }}
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-6">
+        <h4 class="text-lg leading-6 font-medium text-gray-900">
+          Description
+        </h4>
+        <p class="mt-2 text-base text-gray-500">
+          {{ property.description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
+      <div>
+        <h4 class="text-lg leading-6 font-medium text-gray-900 mb-2">
+          Location
+        </h4>
+        <div id="map" style="height: 300px;"></div>  <p class="mt-2 text-base text-gray-500">
+          This {{ property.property_type }} property is located in a vibrant {{ property.neighborhood }} neighborhood,
+          {% if property.distance_to_beach %}
+            just {{ property.distance_to_beach }} from the sand and surf.
+          {% else %}
+            conveniently located within the city limits.
+          {% endif %}
+          Enjoy the convenience of being close to world-class restaurants, shops, and nightlife. Schools, parks, and cultural attractions are all within a short distance, making this an ideal location for families and young professionals alike.
+        </p>
+      </div>
+      <div class="mt-8 text-center">
+        <a href="#" class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-sky-600 text-white font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+          Schedule a Viewing
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
