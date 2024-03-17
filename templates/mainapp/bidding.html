@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UniHome Comfort</title>
+</head>
+<style>
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 300px;
+            margin: auto;
+        }
+        .form-field {
+            margin-bottom: 10px;
+        }
+        .form-field label, .form-field input {
+            display: block;
+        }
+        .form-field input {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+
+<body>
+{% extends 'mainapp/base.html' %}
+{% block body_block %}
+    <div class="container">
+        <h1>Your bid</h1>
+        <!-- Property details go here -->
+        <hr>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label>Minimum bid</label>
+                <span>$100</span>
+            </div>
+            <div class="form-field">
+                <label>Maximum bid</label>
+                <span>$300</span>
+            </div>
+            <div class="form-field">
+                <label>Current bid</label>
+                <span>${{ form.bidding_amount }}</span>
+            </div>
+            <div class="form-field">
+                {{ form.your_bid.label_tag }}
+                {{ form.your_bid }}
+            </div>
+            <button type="submit">Submit bid</button>
+        </form>
+    </div>
+
+
+{% endblock %}
+</body>
+</html>
