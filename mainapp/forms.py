@@ -1,5 +1,5 @@
 from django import forms
-from .models import CommunityPost,Category, Property
+from .models import CommunityPost,Category, Property, Bidding
 
 
 
@@ -34,3 +34,8 @@ class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
         fields = ['title', 'address']
+
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bidding
+        fields = ['property', 'bidding_amount']
