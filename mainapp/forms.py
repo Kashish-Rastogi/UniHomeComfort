@@ -1,5 +1,5 @@
 from django import forms
-from .models import CommunityPost,Category, Property
+from .models import CommunityPost,Category, Property,Bidding
 
 
 
@@ -81,3 +81,7 @@ class PropertyForm(forms.ModelForm):
             'prop_image5': forms.FileInput(attrs={'class': 'common-input'}),
             'house_build_date': forms.DateInput(attrs={'class': 'common-input'}),
         }
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bidding
+        fields = ['property', 'bidding_amount']

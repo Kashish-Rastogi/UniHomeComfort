@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm,BidForm
 from .models import Property, OwnerUser, CommunityPost, Category, StudentUser
 from django.core.mail import send_mail
 from django.conf import settings
@@ -48,6 +48,16 @@ def ownerdashboard(request):
     property = Property.objects.all()
     return render(request, 'mainapp/owner-dashboard.html', {'property_type_form': property_type_form,
                                                             'property': property})
+
+def bidding(request):
+    if request.method == "POST":
+        form = BidForm(request.POST)
+        if form.is_valid():
+            # Handle the submitted bid here
+            pass
+    else:
+        form = BidForm(initial={'current_bid': 200})  # Example current bid
+    return render(request, 'mainapp/bidding.html',{'form':form})
 
 
 def viewbiddedproperties(request):
