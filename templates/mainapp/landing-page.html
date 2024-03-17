@@ -225,19 +225,19 @@
   </div>
     {# 3 half of the layout #}
 
-<div>
+<div class="bg-black">
   <div
-    class="grid sm:grid-cols-2 items-center gap-16 my-6 mx-auto max-w-4xl bg-white text-[#333] font-[sans-serif]"
+    class="grid sm:grid-cols-2 items-center gap-16 my-6 mx-auto max-w-4xl bg-black text-[#333] font-[sans-serif]"
   >
     <div class="gap-4">
         <div>
-            <h1 class="text-3xl font-extrabold">Let's Talk</h1>
+            <h1 class="text-3xl font-extrabold text-white">Let's Talk</h1>
               <p class="text-sm text-gray-400 mt-3">
                 Have some big idea or brand to develop and need help? Then reach out
                 we'd love to hear about your project and provide help.
               </p>
               <div class="mt-12">
-                <h2 class="text-lg font-extrabold">Email</h2>
+                <h2 class="text-lg font-extrabold text-white">Email</h2>
                 <ul class="mt-3">
                   <li class="flex items-center">
                     <div
@@ -257,14 +257,14 @@
                       </svg>
                     </div>
                     <a href="javascript:void(0)" class="text-[#007bff] text-sm ml-3">
-                      <small class="block">Mail</small>
-                      <strong>info@example.com</strong>
+                      <small class="block text-white">Mail</small>
+                      <strong class=" text-white">info@example.com</strong>
                     </a>
                   </li>
                 </ul>
               </div>
               <div class="mt-12">
-        <h2 class="text-lg font-extrabold">Socials</h2>
+        <h2 class="text-lg font-extrabold text-white">Socials</h2>
         <ul class="flex mt-3 space-x-4">
           <li
             class="bg-[#e6e6e6cf] h-10 w-10 rounded-full flex items-center justify-center shrink-0"
@@ -324,7 +324,7 @@
         </div>
     </div>
 
-<form action="{% url 'landing-page' %}" method="post" class="space-y-6" autocomplete="off">
+<form action="{% url 'landing-page' %}" method="post" class="space-y-6 bg-black" autocomplete="off">
     {% csrf_token %}
     <div class="flex gap-2">
         <!-- First Name -->

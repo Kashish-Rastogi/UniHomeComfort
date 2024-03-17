@@ -1,5 +1,5 @@
 from django import forms
-from .models import CommunityPost,Category, Property, Bidding
+from .models import CommunityPost,Category, Property
 
 
 
@@ -35,7 +35,49 @@ class PropertyForm(forms.ModelForm):
         model = Property
         fields = ['title', 'address']
 
-class BidForm(forms.ModelForm):
+
+class PropertyTypeForm(forms.ModelForm):
     class Meta:
-        model = Bidding
-        fields = ['property', 'bidding_amount']
+        model = Property
+        fields = ['property_type']
+        widgets = {
+            'property_type': forms.Select(attrs={'class': 'flex-1 border border-gray-300 rounded-lg py-2 px-4'},
+                                          choices=Property.property_type)
+        }
+        labels = {
+            'property_type': ''
+        }
+
+class PropertyForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        exclude = ['owner','created_at', 'expire', 'lease_required']
+        labels = {
+            'number_of_bedrooms': 'No. Bedrooms:',
+            'number_of_bathrooms': 'No. Bathrooms:'
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'address': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'city': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'zipcode': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'property_type': forms.Select(attrs={'class': 'common-input w-full'}),
+            'number_of_bedrooms': forms.NumberInput(attrs={'class': 'common-input w-full'}),
+            'number_of_bathrooms': forms.NumberInput(attrs={'class': 'common-input w-full'}),
+            'amenities': forms.Textarea(attrs={'class': 'common-input w-full h-20'}),
+            'price': forms.NumberInput(attrs={'class': 'common-input w-full'}),
+            'availability_status': forms.Select(attrs={'class': 'common-input w-full'}),
+            'available_from': forms.DateTimeInput(attrs={'class': 'common-input w-full'}),
+            'available_to': forms.DateTimeInput(attrs={'class': 'common-input w-full'}),
+            'is_biddable': forms.CheckboxInput(attrs={'class': 'common-checkbox w-full'}),
+            'bidding_min_limit': forms.NumberInput(attrs={'class': 'common-input w-full'}),
+            'lease_duration': forms.NumberInput(attrs={'class': 'common-input'}),
+            'allowed_lease_people': forms.NumberInput(attrs={'class': 'common-input'}),
+            'rules': forms.Textarea(attrs={'class': 'common-input w-full h-20'}),
+            'prop_image1': forms.FileInput(attrs={'class': 'common-input w-full '}),
+            'prop_image2': forms.FileInput(attrs={'class': 'common-input w-full '}),
+            'prop_image3': forms.FileInput(attrs={'class': 'common-input w-full '}),
+            'prop_image4': forms.FileInput(attrs={'class': 'common-input'}),
+            'prop_image5': forms.FileInput(attrs={'class': 'common-input'}),
+            'house_build_date': forms.DateInput(attrs={'class': 'common-input'}),
+        }
