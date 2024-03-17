@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import CommunityPostForm, ContactForm
-from .models import Property, OwnerUser, CommunityPost, Category
+from .models import Property, OwnerUser, CommunityPost, Category, StudentUser
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -46,6 +46,15 @@ def loginpage(request):
 def ownerdashboard(request):
     return render(request, 'mainapp/owner-dashboard.html')
 
+def viewbiddedproperties(request):
+    return render (request, 'mainapp/view-bidded-properties.html')
+
+def studentallproperties(request, student_id):
+    # student = get_object_or_404(StudentUser, id=student_id)
+
+    return render (request, 'mainapp/student-all-properties.html')
+
+
 def community_posts_list(request):
     category_id = request.GET.get('category_id', '')
     categories = Category.objects.all()  # Fetch all categories from database
@@ -62,7 +71,7 @@ def community_posts_list(request):
         'selected_category_id': category_id
     })
 
-@login_required
+# @login_required
 def create_community_post(request):
     categories = Category.objects.all()  # Fetch categories once
 
@@ -80,7 +89,7 @@ def create_community_post(request):
     return render(request, 'mainapp/create-community-post.html', {'form': form, 'categories': categories})
 
 
-@login_required
+# @login_required
 def update_community_post(request, pk):
     post = get_object_or_404(CommunityPost, pk=pk)
     if request.user != post.author and not request.user.is_superuser:
@@ -104,7 +113,7 @@ def update_community_post(request, pk):
     })
 
 
-@login_required
+# @login_required
 def delete_community_post(request, pk):
     post = get_object_or_404(CommunityPost, pk=pk)
     if request.user != post.author and not request.user.is_superuser:
