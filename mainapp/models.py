@@ -103,6 +103,9 @@ class Property(models.Model):
 
     title = models.CharField(max_length=255)
     address = models.TextField()
+    city = models.TextField(max_length=50, default='Windsor')
+    zipcode = models.TextField(max_length=50, default='N9B 2T6')
+
     property_type = models.CharField(max_length=50, choices=PROPERTY_TYPES)
     number_of_bedrooms = models.IntegerField()
     number_of_bathrooms = models.IntegerField()

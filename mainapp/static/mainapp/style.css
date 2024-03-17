@@ -1,0 +1,37 @@
+input{
+    display: flex;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    align-items: center;
+    border-radius: 1rem;
+    border-width: 2px;
+    outline-style: none;
+}
+
+.common-input {
+    /* Shared properties for input fields */
+    appearance: none;
+    outline: none;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.5rem;
+    transition: border-color 0.2s ease-in-out;
+    margin-top: 0.5rem; /* Add margin-top */
+}
+
+/* Focus state for input fields */
+.common-input:focus {
+    border-color: #667eea; /* Example focus color */
+}
+
+/* Error state for input fields */
+.common-input.error {
+    border-color: #f56565; /* Example error color */
+}
+
+.formlabel {
+    font-size: 1.125rem; /* Equivalent to 18px assuming the default font size is 16px */
+    font-weight: 600; /* This assumes a font-weight of 600 corresponds to "semibold" */
+}

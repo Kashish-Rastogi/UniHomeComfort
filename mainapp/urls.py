@@ -1,11 +1,13 @@
 from django.urls import path
-from .views import landingpage, loginpage, ownerdashboard, community_posts_list, update_community_post, delete_community_post, property_detail, viewbiddedproperties, studentallproperties
+from .views import landingpage, loginpage, ownerdashboard, community_posts_list, update_community_post, delete_community_post, property_detail, viewbiddedproperties, studentallproperties, add_property
 from . import views
 
 myapp_name = 'mainapp'
 
 urlpatterns = [
     path('', landingpage, name='landing-page'),
+    path('add-property/', add_property, name='add-property'),
+
     path('login/', loginpage, name='login-page'),
     path('owner-dashboard/', ownerdashboard, name='owner-dashboard'),
     path('view-bidded-properties/', viewbiddedproperties, name='view-bidded-properties'),
