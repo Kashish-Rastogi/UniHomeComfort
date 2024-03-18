@@ -1,6 +1,12 @@
 from django import forms
-from .models import CommunityPost,Category, Property,Bidding, CustomUser, OwnerUser
+from .models import CommunityPost,Category, Property,Bidding, AppUser
+from django.contrib.auth.forms import UserCreationForm
 
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Password'}))
 
 
 class CommunityPostForm(forms.ModelForm):
@@ -28,6 +34,55 @@ class ContactForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'w-full rounded-md py-3 px-4 bg-gray-100 text-sm outline-[#007bff]', 'placeholder': 'Email'}))
     user_type = forms.ChoiceField(choices=[('owner', 'Owner'), ('student', 'Student')], widget=forms.Select(attrs={'class': 'inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'}))
     message = forms.CharField(widget=forms.Textarea(attrs={'class': 'w-full rounded-md px-4 bg-gray-100 text-sm py-3 mt-4 outline-[#007bff]', 'placeholder': 'Message', 'rows': '6'}))
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = AppUser
+        fields = ['username', 'email', 'password1', 'password2', 'country_code', 'mobile_no', 'age', 'address', 'state',
+                  'city', 'zip_code', 'gender', 'offer_letter', 'country', 'institute', 'identification', 'occupation',
+                  'is_student', 'is_owner']
+        widgets = {
+            'username': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Username'}),
+            'password1': forms.PasswordInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Password'}),
+            'password2': forms.PasswordInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Password'}),
+            # Corrected
+            'first_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                 'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                'placeholder': 'Last name'}),
+            'email': forms.EmailInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
+            'country_code': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true', 'placeholder': '1'}),
+            'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                  'placeholder': 'Mobile no.'}),
+            'age': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Age'}),
+            'address': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Address'}),
+            'state': forms.Select(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'State'}),
+            'city': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'City'}),
+            'zip_code': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Zip code'}),
+            'gender': forms.RadioSelect(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'},
+                                        choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]),
+            'offer_letter': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'}),
+            'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget = forms.PasswordInput(
+            attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Password'})
+        self.fields['password2'].widget = forms.PasswordInput(
+            attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Confirm Password'})
+
 
 
 class PropertyForm(forms.ModelForm):
@@ -94,5 +149,5 @@ class PropertyForm(forms.ModelForm):
 
 class PropertyOwnerRegistrationForm(forms.ModelForm):
     class Meta:
-        model = CustomUser
-        fields = ['username', 'password', 'email', 'country_code', 'mobile_no', 'age', 'address', 'state', 'city', 'zip_code', 'occupation', 'identification', 'rental_license']
+        model = AppUser
+        fields = ['username', 'password', 'email', 'country_code', 'mobile_no', 'age', 'address', 'state', 'city', 'zip_code', 'occupation', 'identification']

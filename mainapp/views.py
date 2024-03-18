@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm,BidForm
-from .models import Property, OwnerUser, CommunityPost, Category, StudentUser,Bidding
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm,BidForm, CustomUserCreationForm, LoginForm
+from .models import Property, CommunityPost, Category, Bidding, AppUser
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from .forms import PropertyOwnerRegistrationForm
 from .models import Property
 from django.db.models import Max
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 def user_login(request):
     if request.method == 'POST':
@@ -35,6 +36,40 @@ def user_login(request):
 #         form = UserCreationForm()
 #     return render(request, 'register.html', {'form': form})
 
+def loginpage(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            print(username, password)
+            user = authenticate(request,username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'You have been successfully logged in.')
+                return redirect('owner-dashboard')
+            else:
+                messages.error(request, 'Invalid username or password.')
+    else:
+        form = LoginForm()
+    return render(request, 'mainapp/login.html', {'form': form})
+
+def register_student_user(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # login(request, user)
+            messages.success(request, 'Registration successful. You are now logged in.')
+            return redirect('login-page')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'mainapp/register-student-user.html', {'form': form})
+
 
 def property_owner_register(request):
     if request.method == 'POST':
@@ -58,7 +93,7 @@ def property_listing(request):
 
     # Render the template with the list of properties
 def landingpage(request):
-    ouser = OwnerUser.objects.all()
+    ouser = AppUser.objects.all()
     context = {'ouser': ouser}
 
     if request.method == 'POST':
@@ -89,11 +124,12 @@ def landingpage(request):
     return render(request, 'mainapp/landing-page.html', context)
 
 
-def loginpage(request):
-    return render(request, 'mainapp/login.html')
 
 
+
+@login_required(login_url='mainapp/login-page')
 def ownerdashboard(request):
+    print(request.user)
     property_type_form = PropertyTypeForm()
     property = Property.objects.all()
     return render(request, 'mainapp/owner-dashboard.html', {'property_type_form': property_type_form,

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', landingpage, name='landing-page'),
     path('add-property/', add_property, name='add-property'),
     path('login/', loginpage, name='login-page'),
+    path('register-student-user/', views.register_student_user, name='register-student-user'),
     path('register/', views.property_owner_register, name='register'),
     path('properties/', property_listing, name='property_listing'),
     path('owner-dashboard/', ownerdashboard, name='owner-dashboard'),
