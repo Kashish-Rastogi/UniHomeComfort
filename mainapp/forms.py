@@ -1,5 +1,5 @@
 from django import forms
-from .models import CommunityPost,Category, Property,Bidding
+from .models import CommunityPost,Category, Property,Bidding, CustomUser, OwnerUser
 
 
 
@@ -85,3 +85,14 @@ class BidForm(forms.ModelForm):
     class Meta:
         model = Bidding
         fields = ['property', 'bidding_amount']
+
+
+class PropertyForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = ['title', 'address']
+
+class PropertyOwnerRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'password', 'email', 'country_code', 'mobile_no', 'age', 'address', 'state', 'city', 'zip_code', 'occupation', 'identification', 'rental_license']

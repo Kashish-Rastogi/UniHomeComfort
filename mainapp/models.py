@@ -38,6 +38,9 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     gender = models.CharField(max_length=7, choices=GENDER, default='Female')
+    identification = models.FileField(upload_to='documents/user/identifications/', null=True, blank=True)
+    rental_license = models.FileField(upload_to='documents/user/rental_license/', null=True, blank=True)
+    occupation = models.CharField(max_length=100, null=True, blank=True)
     # Specify unique related_name for groups and user_permissions
     groups = models.ManyToManyField(Group, blank=True, related_name='customuser_groups')
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='customuser_permissions')
@@ -82,8 +85,8 @@ class OwnerUser(CustomUser):
         (2, "Unemployed"),
     ]
 
-    identification = models.FileField(upload_to='documents/owner/identifications/')
-    occupation = models.IntegerField(default=0, choices=OCCUPATION_TYPES)
+    # identification = models.FileField(upload_to='documents/owner/identifications/')
+    # occupation = models.IntegerField(default=0, choices=OCCUPATION_TYPES)
 
     def str(self):
         return f"Property Owner Profile - {self.first_name}"

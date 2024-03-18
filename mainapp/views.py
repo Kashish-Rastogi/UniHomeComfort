@@ -5,8 +5,57 @@ from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeFor
 from .models import Property, OwnerUser, CommunityPost, Category, StudentUser
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm
+from .forms import PropertyOwnerRegistrationForm
+from .models import Property
 
 
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to the home page after login
+        else:
+            # Handle invalid login credentials
+            return render(request, 'login.html', {'error_message': 'Invalid username or password'})
+    else:
+        return render(request, 'login.html')
+
+# def user_register(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')  # Redirect to the login page after registration
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'register.html', {'form': form})
+
+
+def property_owner_register(request):
+    if request.method == 'POST':
+        form = PropertyOwnerRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redirect to the login page after registration
+    else:
+        form = PropertyOwnerRegistrationForm()
+    return render(request, 'mainapp/register.html', {'form': form})
+
+
+def property_listing(request):
+    # Retrieve all properties from the database
+    properties = Property.objects.all()
+
+    # Pass the properties to the template context
+    context = {
+        'properties': properties
+    }
+
+    # Render the template with the list of properties
 def landingpage(request):
     ouser = OwnerUser.objects.all()
     context = {'ouser': ouser}

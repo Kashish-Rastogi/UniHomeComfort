@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listing</title>
+</head>
+<body>
+    <h1>Property Listing</h1>
+    <ul>
+        {% for property in properties %}
+            <li>
+                <h2>{{ property.title }}</h2>
+                <p>Address: {{ property.address }}</p>
+                <p>Type: {{ property.get_property_type_display }}</p>
+                <p>Price: ${{ property.price }}</p>
+
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
