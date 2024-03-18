@@ -2,11 +2,60 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm,BidForm
-from .models import Property, OwnerUser, CommunityPost, Category, StudentUser, Bidding
+from .models import Property, OwnerUser, CommunityPost, Category, StudentUser
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Max
+from django.contrib.auth.forms import UserCreationForm
+from .forms import PropertyOwnerRegistrationForm
+from .models import Property
 
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to the home page after login
+        else:
+            # Handle invalid login credentials
+            return render(request, 'login.html', {'error_message': 'Invalid username or password'})
+    else:
+        return render(request, 'login.html')
+
+# def user_register(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')  # Redirect to the login page after registration
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'register.html', {'form': form})
+
+
+def property_owner_register(request):
+    if request.method == 'POST':
+        form = PropertyOwnerRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redirect to the login page after registration
+    else:
+        form = PropertyOwnerRegistrationForm()
+    return render(request, 'mainapp/register.html', {'form': form})
+
+
+def property_listing(request):
+    # Retrieve all properties from the database
+    properties = Property.objects.all()
+
+    # Pass the properties to the template context
+    context = {
+        'properties': properties
+    }
+
+    # Render the template with the list of properties
 def landingpage(request):
     ouser = OwnerUser.objects.all()
     context = {'ouser': ouser}
@@ -49,22 +98,15 @@ def ownerdashboard(request):
     return render(request, 'mainapp/owner-dashboard.html', {'property_type_form': property_type_form,
                                                             'property': property})
 
-def bidding(request, property_id):
-    property_data = get_object_or_404(Property, pk=property_id)
-    max_bidding_amount= Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
-        'max_bidding_amount']
-
-    # print(property_data.prop_image1)
+def bidding(request):
     if request.method == "POST":
         form = BidForm(request.POST)
         if form.is_valid():
-            form = form.save(commit=False)
-            form.bidding_status = 'accepted'
-            form.bidding_amount = form.cleaned_data['bidding_amount']
-            form.save()
+            # Handle the submitted bid here
+            pass
     else:
-        form = BidForm(initial={'bidding_amount': max_bidding_amount or 2000})  # Example current bid
-    return render(request, 'mainapp/bidding.html',{'form': form, 'property_data': property_data,'max_bidding_amount': max_bidding_amount})
+        form = BidForm(initial={'current_bid': 200})  # Example current bid
+    return render(request, 'mainapp/bidding.html',{'form':form})
 
 
 def viewbiddedproperties(request):
