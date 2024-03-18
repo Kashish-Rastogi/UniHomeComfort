@@ -1,68 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>UniHome Comfort</title>
-</head>
-<style>
-
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            width: 300px;
-            margin: auto;
-        }
-        .form-field {
-            margin-bottom: 10px;
-        }
-        .form-field label, .form-field input {
-            display: block;
-        }
-        .form-field input {
-            width: 100%;
-            padding: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-
-<body>
 {% extends 'mainapp/base.html' %}
+{% load static %}
 {% block body_block %}
-    <div class="container">
-        <h1>Your bid</h1>
-        <!-- Property details go here -->
-        <hr>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-field">
-                <label>Minimum bid</label>
-                <span>$100</span>
-            </div>
-            <div class="form-field">
-                <label>Maximum bid</label>
-                <span>$300</span>
-            </div>
-            <div class="form-field">
-                <label>Current bid</label>
-                <span>${{ form.bidding_amount }}</span>
-            </div>
-            <div class="form-field">
-                {{ form.your_bid.label_tag }}
-                {{ form.your_bid }}
-            </div>
-            <button type="submit">Submit bid</button>
-        </form>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Your bid</h1>
+        {% if property_data %}
+            <img src="{{ property_data.prop_image1.imageURL }}" class="w-15 h-15 ml-4" alt="Property Image">
+            <hr class="my-4">
+            <form method="post" class="bg-white p-4 rounded shadow-md">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <h3 class="block text-lg font-medium text-gray-700">{{ property_data.title }}</h3>
+                    <h3 class="block text-sm font-medium text-gray-700">{{ property_data.address}}</h3>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Minimum bid</label>
+                    <span class="block text-lg font-semibold text-gray-900">$ {{property_data.bidding_min_limit}}</span>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Maximum bid</label>
+                    <span class="block text-lg font-semibold text-gray-900">{{ max_bidding_amount }}
+                    	 </span>
+                </div>
+                <div class="mb-4">
+                    {#                <label class="block text-sm font-medium text-gray-700">Enter your bid</label>#}
+                    <input type="number" class="block text-lg font-semibold text-gray-900" placeholder="Enter your bid">
+                    {#                <span class="block text-lg font-semibold text-gray-900">${{ form.current_bid.value }}</span>#}
+                </div>
+                <button type="submit" class="bg-black text-white py-2 px-4 rounded cursor-pointer">Submit bid</button>
+            </form>
+    {% endif %}
     </div>
 
-
 {% endblock %}
-</body>
-</html>
