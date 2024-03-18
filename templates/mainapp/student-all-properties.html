@@ -1,0 +1,194 @@
+{% extends 'mainapp/base.html' %} {% block body_block %}
+
+    <div class="flex h-screen">
+        {# Side bar #}
+        <div class="bg-gray-800 text-white w-64">
+            <div class="p-4">
+                <h1 class="text-2xl flex gap-2 item-center font-bold mb-4">
+                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Dashboard</h1>
+                <ul class="space-y-2">
+                    <li >
+                        <button class="p-2  flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
+                            <span>Properties</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <ul class="pl-4 mt-2 space-y-2 " id="myPropertiesSubmenu">
+                            <li class="p-2 bg-gray-900 rounded-xl ">
+                                <a href="{% url 'student-all-properties' 1 %}" class="text-gray-300 hover:text-white">All Properties</a>
+                            </li>
+                            <li class="p-2 hover:bg-gray-900 rounded-xl">
+                                <a href="{% url 'view-bidded-properties' %}" class="text-gray-300 hover:text-white">Bidded Properties</a>
+                            </li>
+                            </ul>
+                    </li>
+                    <li>
+                        <button class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Payments</span>
+                        </button>
+                    </li>
+                    <li >
+                        <button class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Settings</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+          {# Main Content #}
+        <div class="flex-1 p-6">
+            {# button new prop #}
+            <div class="flex justify-between items-center">
+            <div class="flex flex-col gap-2">
+                <p class="font-bold">Welcome student!</p>
+                <h1 class="flex-1 text-2xl font-bold mb-4 -mt-1">User Name</h1>
+                </div>
+                <div class="flex">
+                <button class="py-2 px-4 bg-gray-700 hover:bg-blue-700 text-white font-bold rounded">View Properties</button>
+            </div>
+            </div>
+            {# filters #}
+           <div class="bg-white p-8 border border-slate-900 rounded-xl">
+
+               <h2 class="text-xl font-bold mb-5">All Properties</h2>
+                <div class="flex justify-between items-center mb-4 -mt-2">
+                    <div class="flex gap-6 ">
+                    <div class="flex flex-col ">
+                        <span class="font-medium text-gray-900">Property</span>
+                        <select class="flex-1 border border-gray-300 rounded-lg py-2 px-4">
+                            <option>All</option>
+                            <option>Houses</option>
+                            <option>Apartments</option>
+                    </select>
+                        </div>
+
+                    <div class="flex flex-col ">
+                        <span class="font-medium text-gray-900">Status</span>
+                        <select class="flex-1 border border-gray-300 rounded-lg py-2 px-4">
+                            <option>All</option>
+                            <option>Published</option>
+                            <option>Draft</option>
+                            <option>Expired</option>
+                        </select>
+                    </div>
+
+
+                 </div>
+                    <div class="flex items-end space-x-2 gap-4 mt-4">
+                        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Filter</button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear</button>
+                    </div>
+                </div>
+
+            {# card - table layout #}
+         <div class="overflow-x-auto mt-6">
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="px-4 py-2 rounded-tl-2xl text-gray-900">Property</th>
+                <th class="px-4 py-2 text-gray-900">Type</th>
+                <th class="px-4 py-2 text-gray-900">Price</th>
+                <th class="px-4 py-2 text-gray-900">Your Bid</th>
+                <th class="px-4 py-2 text-gray-900">Highest Bid</th>
+                <th class="px-4 py-2 rounded-tr-2xl text-gray-900">Status</th>
+
+            </tr>
+        </thead>
+        <tbody class="rounded-xl">
+            <tr class="item-center justify-center">
+                <td class="w-1/3">
+                    <div>
+                        <a href="#" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/docs/images/blog/image-4.jpg" alt="">
+                            <div class="flex justify-start item-start  flex-col p-2 leading-normal">
+                                <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">4BHK Property</h5>
+                                <p class="font-normal text-gray-700 dark:text-gray-400">Windsor, ON</p>
+                                <p class="font-normal text-gray-700 dark:text-gray-400 -mt-2">Expires on: </p>
+                            </div>
+                        </a>
+                    </div>
+                </td>
+                <td class="text-center">Apartment</td>
+                <td class="text-center">$86,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">
+                    <!--
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Draft</button>
+                        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-1">Featured</button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">Expired</button>
+                     -->
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Got deal</button>
+                </td>
+            </tr>
+            <tr class="item-center justify-center">
+                <td class="w-1/3">
+                    <div>
+                        <a href="#" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/docs/images/blog/image-4.jpg" alt="">
+                            <div class="flex justify-start item-start  flex-col p-2 leading-normal">
+                                <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">4BHK Property</h5>
+                                <p class="font-normal text-gray-700 dark:text-gray-400">Windsor, ON</p>
+                                <p class="font-normal text-gray-700 dark:text-gray-400 -mt-2">Expires on: </p>
+                            </div>
+                        </a>
+                    </div>
+                </td>
+                <td class="text-center">Apartment</td>
+                <td class="text-center">$86,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">
+                    <!--
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Draft</button>
+                        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-1">Featured</button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">Expired</button>
+                     -->
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Got deal</button>
+                </td>
+            </tr>
+            <tr class="item-center justify-center">
+                <td class="w-1/3">
+                    <div>
+                        <a href="#" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/docs/images/blog/image-4.jpg" alt="">
+                            <div class="flex justify-start item-start  flex-col p-2 leading-normal">
+                                <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">4BHK Property</h5>
+                                <p class="font-normal text-gray-700 dark:text-gray-400">Windsor, ON</p>
+                                <p class="font-normal text-gray-700 dark:text-gray-400 -mt-2">Expires on: </p>
+                            </div>
+                        </a>
+                    </div>
+                </td>
+                <td class="text-center">Apartment</td>
+                <td class="text-center">$86,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">$89,000</td>
+                <td class="text-center">
+                    <!--
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Draft</button>
+                        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-1">Featured</button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">Expired</button>
+                     -->
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Got deal</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+            <hr>
+
+</div>
+        </div>
+    </div>
+    {# end #}
+        <script>
+        $(document).ready(function() {
+            $("#myPropertiesBtn").click(function() {
+                $("#myPropertiesSubmenu").toggleClass("hidden");
+            });
+        });
+    </script>
+
+{% endblock %}
