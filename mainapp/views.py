@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm,BidForm
-from .models import Property, OwnerUser, CommunityPost, Category, StudentUser
+from .models import Property, OwnerUser, CommunityPost, Category, StudentUser,Bidding
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from .forms import PropertyOwnerRegistrationForm
 from .models import Property
+from django.db.models import Max
 
 
 def user_login(request):
@@ -98,15 +99,23 @@ def ownerdashboard(request):
     return render(request, 'mainapp/owner-dashboard.html', {'property_type_form': property_type_form,
                                                             'property': property})
 
-def bidding(request):
+def bidding(request, property_id):
+    property_data = get_object_or_404(Property, pk=property_id)
+    max_bidding_amount= Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
+        'max_bidding_amount']
+
+    # print(property_data.prop_image1)
     if request.method == "POST":
         form = BidForm(request.POST)
         if form.is_valid():
-            # Handle the submitted bid here
-            pass
+            form = form.save(commit=False)
+            form.bidding_status = 'accepted'
+            form.bidding_amount = form.cleaned_data['bidding_amount']
+            form.save()
     else:
-        form = BidForm(initial={'current_bid': 200})  # Example current bid
-    return render(request, 'mainapp/bidding.html',{'form':form})
+        form = BidForm(initial={'bidding_amount': max_bidding_amount or 2000})  # Example current bid
+    return render(request, 'mainapp/bidding.html',{'form': form, 'property_data': property_data,'max_bidding_amount': max_bidding_amount})
+
 
 
 def viewbiddedproperties(request):
