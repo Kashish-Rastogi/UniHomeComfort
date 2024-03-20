@@ -114,10 +114,19 @@ def landingpage(request):
                 recipient_list=[settings.EMAIL_HOST_USER],
                 fail_silently=False,
             )
+            user_email_subject = "Thank you for reaching out to us!"
+            user_email_message = "Thank you for reaching out to us. We will contact you very soon via email."
 
+            send_mail(
+                subject=user_email_subject,
+                message=user_email_message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False,
+            )
             context['success_message'] = "Thank you for contacting us! We will get back to you soon."
             return render(request, 'mainapp/landing-page.html',
-                          {**context, 'contact_form': ContactForm()})  # Provides a new blank form
+                          {**context, 'contact_form': ContactForm()})
     else:
         contact_form = ContactForm()
 
