@@ -34,8 +34,9 @@ class Institute(models.Model):
     type = models.IntegerField(default=0, choices=INSTITUTE_TYPE)
     address = models.TextField()
     city = models.TextField(default="Windsor")
-    state = models.CharField(max_length=130, choices=STATE, default='AB')
-    country = models.TextField(null=True, blank=True)
+    state = models.CharField(max_length=130, choices=STATE, default='ON')
+    zip_code = models.TextField(default="N9B 2T6")
+    country = models.TextField(null=True, blank=True, default='Canada')
 
     def __str__(self):
         return self.name
@@ -92,6 +93,12 @@ class AppUser(User):
     def __str__(self):
         return str(self.first_name)
 
+class PropertyType(models.Model):
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
 
 # Jainam
 class Property(models.Model):
@@ -127,12 +134,13 @@ class Property(models.Model):
     allowed_lease_people = models.IntegerField(null=False, default=2)
     rules = models.TextField(blank=True)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='owner_name', default=1)
-    prop_image1 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
-    prop_image2 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
-    prop_image3 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
-    prop_image4 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
-    prop_image5 = models.FileField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image1 = models.ImageField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image2 = models.ImageField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image3 = models.ImageField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image4 = models.ImageField(upload_to='documents/property_images/', null=True, blank=True)
+    prop_image5 = models.ImageField(upload_to='documents/property_images/', null=True, blank=True)
     house_build_date = models.DateField(default=timezone.now)
+    bidding_end_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.title

@@ -1,10 +1,9 @@
 {% extends 'mainapp/base.html' %}
 {% block body_block %}
 
-{#    w-3/4#}
 <div class="flex justify-center items-center bg-gray-100 py-10">
     <div class="flex justify-center bg-white flex-col p-10 shadow-lg rounded-lg w-3/4 -mt-4">
-        <form method="post">
+        <form method="post" action="">
             {% csrf_token %}
             <div class="flex flex-col">
             <h1 class="text-3xl font-bold flex-1 -mt-4">Add Property Details</h1>
@@ -19,7 +18,7 @@
                         {{ property_form.availability_status }}
                      </div>
                     <div class="flex flex-1 flex-col">
-                        <label for="{{ property_form.property_type.id_for_label }}" class="formlabel">Property Type</label>
+                        <label for="property_type" class="formlabel">{{ property_form.property_type.id_for_label }}</label>
                             {{ property_form.property_type }}
                     </div>
                 </div>
@@ -72,7 +71,7 @@
 
             </div>
 
-            <div class="flex flex-wrap mt-4 gap-4 w-2/3">
+            <div class="flex flex-wrap mt-6 gap-4 w-2/3">
                 <div class="flex flex-col flex-1">
                     <label for="{{ property_form.available_from.id_for_label }}">Available From</label>
                     {{ property_form.available_from }}
@@ -84,21 +83,27 @@
 
             </div>
 
-            <div class="flex flex-wrap mt-4 gap-4 w-2/3">
+            <div class="flex flex-wrap mt-4 gap-4">
                 <div class="flex flex-wrap w-1/2">
-                <div class="flex flex-col flex-1">
-                    {{ property_form.is_biddable }}
-                    <label for="{{ property_form.is_biddable.id_for_label }}">Biddable</label>
-                </div>
-                <div class="flex flex-col flex-1">
-                    <label for="{{ property_form.bidding_min_limit.id_for_label }}">Bidding Min Limit</label>
-                    {{ property_form.bidding_min_limit }}
-                </div>
+                    <div class="flex flex-col flex-1">
+                        {{ property_form.is_biddable }}
+                        <label for="{{ property_form.is_biddable.id_for_label }}">Biddable</label>
                     </div>
+                    <div class="flex flex-col flex-1">
+                        <label for="{{ property_form.bidding_min_limit.id_for_label }}">Bidding Min Limit</label>
+                        {{ property_form.bidding_min_limit }}
+                    </div>
+            </div>
+                <div class="flex flex-wrap gap-4 w-1/2">
+                 <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.bidding_end_date.id_for_label }}">Bidding End Date</label>
+                    {{ property_form.bidding_end_date }}
+                </div>
                 <div class="flex flex-col flex-1">
                     <label for="{{ property_form.price.id_for_label }}">Price</label>
                     {{ property_form.price }}
                 </div>
+                    </div>
             </div>
 
             <div class="flex flex-wrap mt-12 gap-4 ">
@@ -125,8 +130,17 @@
                     {{ property_form.prop_image5 }}
                 </div>
             </div>
-
-            <a href="{% url 'add-property' %}" class="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700"> Add Property </a>
+             {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+{#            href="{% url 'owner-add-property' %}"#}
+            <button type="submit"
+               class="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700"> Add Property
+            </button>
                 </form>
     </div>
 </div>
