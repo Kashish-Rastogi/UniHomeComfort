@@ -15,19 +15,24 @@ from django.contrib import messages
 
 # ################# Jainam #################
 def loginpage(request):
+    if request.user:
+        logout(request)
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            print(username, password)
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, 'You have been successfully logged in.')
-                return redirect('owner-view-all-properties')
+            userExists = AppUser.objects.filter(username=username)
+            if userExists.count() == 0:
+                messages.error(request, 'You are not registered, please sign up!')
             else:
-                messages.error(request, 'Invalid username or password.')
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, 'You have been successfully logged in.')
+                    return redirect('owner-view-all-properties')
+                else:
+                    messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
     return render(request, 'mainapp/login.html', {'form': form})
@@ -124,7 +129,7 @@ def landingpage(request):
 
 
 # ################# Kashish #################
-@login_required(login_url='mainapp:login')
+@login_required(login_url='/login/')
 def ownerviewallproperties(request):
     property_type = request.GET.get('property_type', '')
     types = PropertyType.objects.all()  # Fetch all categories from database
@@ -140,7 +145,7 @@ def ownerviewallproperties(request):
         'selected_property_type': property_type
     })
 
-@login_required(login_url='mainapp:login')
+@login_required(login_url='/login/')
 def owneraddproperty(request):
     if request.method == 'POST':
         form = PropertyForm(request.POST, request.FILES)

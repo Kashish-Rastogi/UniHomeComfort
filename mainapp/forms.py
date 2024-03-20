@@ -128,7 +128,7 @@ class PropertyForm(forms.ModelForm):
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'common-input w-full'}),
-            'bidding_end_date': forms.DateTimeInput(attrs={'class': 'common-input w-full'}),
+            'bidding_end_date': forms.DateInput(attrs={'class': 'common-input w-full'}),
             'address': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'city': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'zipcode': forms.TextInput(attrs={'class': 'common-input w-full'}),
@@ -138,7 +138,7 @@ class PropertyForm(forms.ModelForm):
             'amenities': forms.Textarea(attrs={'class': 'common-input w-full h-20'}),
             'price': forms.NumberInput(attrs={'class': 'common-input w-full'}),
             'availability_status': forms.Select(attrs={'class': 'common-input w-full'}),
-            'available_from': forms.DateTimeInput(attrs={'class': 'common-input w-full'}),
+            'available_from': forms.DateInput(attrs={'class': 'common-input w-full'}),
             'is_biddable': forms.CheckboxInput(attrs={'class': 'common-checkbox w-full'}),
             'bidding_min_limit': forms.NumberInput(attrs={'class': 'common-input w-full'}),
             'lease_duration': forms.NumberInput(attrs={'class': 'common-input'}),
