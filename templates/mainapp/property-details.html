@@ -1,100 +1,241 @@
 {% extends 'mainapp/base.html' %}
+{% load static %}
 
 {% block body_block %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  <div class="property-details bg-white shadow overflow-hidden sm:rounded-lg mt-8">
+<style>
+    .button-schedule-viewing {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+        outline: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-    <div class="relative">
-      <img src="{{ property.hero_image.url }}" alt="Property Image" class="w-full h-64 object-cover">
-      <div class="absolute inset-0 bg-gradient-to-r from-gray-100 to-transparent opacity-50"></div>
-      <div class="absolute inset-y-bottom-10 px-4 py-2 sm:px-6 text-center">
-        <h2 class="text-3xl leading-9 font-extrabold text-white shadow-md">
-          {{ property.address }}
-        </h2>
-        <p class="mt-2 text-lg leading-6 text-white shadow-md">
-          {{ property.short_description }}
-        </p>
-      </div>
-    </div>
+    .button-schedule-viewing:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+    }
+    .grid > div {
+        background-color: #f8faff;
+        border: 1px solid #d1e3f8;
+    }
+    body {
+        background-color: #f3f4f6;
+    }
 
-    <div class="px-4 py-5 sm:px-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
-        Details
-      </h3>
-      <dl class="mt-4 grid grid-cols-1 gap-x-4 sm:grid-cols-3 sm:gap-y-8">
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            Address
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ property.address }} ({{ property.street_address }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }})
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            Full Name
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ property.owner.get_full_name }} ({{ owner.first_name }} {{ owner.last_name }})
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            Square Footage
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ property.square_footage }} sq ft
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            Bedrooms
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ property.bedrooms }}
-          </dd>
-        </div>
-        <div>
-          <dt class="text-sm font-medium text-gray-500">
-            Bathrooms
-          </dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ property.bathrooms }}
-          </dd>
-        </div>
-      </dl>
-      <div class="mt-6">
-        <h4 class="text-lg leading-6 font-medium text-gray-900">
-          Description
-        </h4>
-        <p class="mt-2 text-base text-gray-500">
-          {{ property.description }}
-        </p>
-      </div>
+</style>
+<div class="m-8">
+{#    Description Section#}
+    <div class="">
+        <h1 class="text-3xl font-bold">Title</h1>
+        <p class="mt-2 text-lg">Address </p>
     </div>
+{#    Description Section#}
 
-    <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
-      <div>
-        <h4 class="text-lg leading-6 font-medium text-gray-900 mb-2">
-          Location
-        </h4>
-        <div id="map" style="height: 300px;"></div>  <p class="mt-2 text-base text-gray-500">
-          This {{ property.property_type }} property is located in a vibrant {{ property.neighborhood }} neighborhood,
-          {% if property.distance_to_beach %}
-            just {{ property.distance_to_beach }} from the sand and surf.
-          {% else %}
-            conveniently located within the city limits.
-          {% endif %}
-          Enjoy the convenience of being close to world-class restaurants, shops, and nightlife. Schools, parks, and cultural attractions are all within a short distance, making this an ideal location for families and young professionals alike.
-        </p>
-      </div>
-      <div class="mt-8 text-center">
-        <a href="#" class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-sky-600 text-white font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
-          Schedule a Viewing
-        </a>
-      </div>
+    {#    Image Section#}
+    <div>
+        <h1 class="text-2xl font-bold mt-6">Images</h1>
+    <div class="flex justify-center mt-8">
+        <div class="flex flex-row gap-8">
+          <!-- Large Image on the Left -->
+          <div class="w-3/4 pr-4 bg-black">
+            <img src="large_image.jpg" alt="Large Image" class="w-full h-auto">
+          </div>
+          <!-- Four Smaller Images in Two Rows on the Right -->
+          <div class="w-1/4 flex flex-col">
+            <div class="flex flex-row gap-6">
+              <div class="w-1/2 pr-2 bg-black">
+                <img src="small_image1.jpg" alt="Small Image 1" class="w-full h-auto">
+              </div>
+              <div class="w-1/2 pl-2 bg-black">
+                <img src="small_image2.jpg" alt="Small Image 2" class="w-full h-auto">
+              </div>
+            </div>
+            <div class="flex flex-row mt-2 bg-black gap-">
+              <div class="w-1/2 pr-2">
+                <img src="small_image3.jpg" alt="Small Image 3" class="w-full h-auto">
+              </div>
+              <div class="w-1/2 pl-2">
+                <img src="small_image4.jpg" alt="Small Image 4" class="w-full h-auto">
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
+    </div>
+{#    Image Section#}
+
+{#    Description + Price Section#}
+    <div class="flex flex-row gap-8 mt-16">
+        <div class="bg-white shadow-md rounded-lg p-8 w-3/4">
+            <div class="flex items-center">
+                <img src="your-image-url.jpg" alt="User Image" class="w-16 h-16 rounded-full mr-4">
+            <div>
+          <h2 class="text-2xl font-medium text-gray-800">Property Title</h2>
+          <p class="text-gray-600">10765 Hillshire Ave, Baton Rouge, LA 70810</p>
+        </div>
+      </div>
+      <div class="flex flex-row mt-4 gap-4 w-2/3 ml-20">
+        <p class="flex-1 text-gray-600">8000 sqft,</p>
+          <p class="flex-1 text-gray-600">4 Beds,</p>
+          <p class="flex-1 text-gray-600">4 Baths</p>
+      </div>
+            <div>
+                <h3 class="font-bold mt-8">Description</h3>
+                <p class="flex-1 text-gray-600">Description Description Description Description Description Description Description Description Description Description Description Description Description Description </p>
+            </div>
+            <div>
+                <h3 class="flex-1 mt-8 font-bold "> House Rules </h3>
+                <p class="flex-1 text-gray-600">Description Description Description Description Description Description Description Description Description Description Description Description Description Description </p>
+
+            </div>
+
+             <div class="px-4 py-5 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 -ml-4">Informations</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 -ml-4">
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Property Type</h4>
+                    <p class="text-sm text-gray-500">{{ property.get_property_type_display }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Lease Duration (Months)</h4>
+                    <p class="text-sm text-gray-500">{{ property.lease_duration }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Allowed Lease People</h4>
+                    <p class="text-sm text-gray-500">{{ property.allowed_lease_people }}</p>
+                </div>
+{#                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">#}
+{#                    <h4 class="text-sm font-medium text-gray-900">Availability</h4>#}
+{#                    <p class="text-sm text-gray-500">{{ property.get_availability_status_display }}</p>#}
+{#                </div>#}
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Is Biddable?</h4>
+                    <p class="text-sm text-gray-500">{{ property.is_biddable|yesno:"Yes,No" }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Bidding Minimum Limit</h4>
+                    <p class="text-sm text-gray-500">${{ property.bidding_min_limit }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">House Build Date</h4>
+                    <p class="text-sm text-gray-500">{{ property.house_build_date|date:"F j, Y" }}</p>
+                </div>
+             </div>
+        </div>
+
+             <div class="px-4 py-5 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 -ml-4">Amenities</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 -ml-4">
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Hydro</h4>
+                    <p class="text-sm text-gray-500">{{ property.get_property_type_display }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Electricity</h4>
+                    <p class="text-sm text-gray-500">{{ property.lease_duration }}</p>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900">Rent</h4>
+                    <p class="text-sm text-gray-500">{{ property.allowed_lease_people }}</p>
+                </div>
+             </div>
+        </div>
+
+      <div class="mt-8">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          More Info
+        </button>
   </div>
 </div>
+        <div class="bg-white shadow-md rounded-lg p-6 h-96 w-1/4 self-start">
+            <h3 class="font-bold text-2xl"> Price </h3>
+            <div class="flex">
+                <h2> 45,231 </h2>
+                <p>For Sale</p>
+            </div>
+            <div class="flex">
+                <p>Days on Hously</p>
+                <p>124 Days</p>
+            </div>
+            <div class="flex">
+                <p>Price per sq ft</p>
+                <p>$ 186</p>
+            </div>
+            <div class="flex">
+                <p>Monthly Payment (estimate)</p>
+                <p>$ 1497/Monthly</p>
+            </div>
+            </p>
+        </div>
+</div>
+
+        <div class="mt-8 px-4 py-5 sm:px-6 bg-white shadow-md rounded-lg ">
+            <h4 class="text-2xl leading-6 font-medium text-gray-900 mb-2">Location</h4>
+            <div id="map" style="height: 300px;">
+                <!-- Map initialization script goes here -->
+            </div>
+            <p class="mt-2 text-sm text-gray-500">
+                <!-- Property location description -->
+            </p>
+        </div>
+
+
+        <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
+        <div class="mt-8 text-center">
+            <a href="#" class="button-schedule-viewing">
+                Request to book
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    var slideIndex = 1;
+    showSlide(slideIndex);
+
+    function moveSlide(n) {
+        showSlide(slideIndex += n);
+    }
+
+    function showSlide(n) {
+        var i;
+        var slides = document.getElementsByClassName("slide");
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+            slides[i].style.opacity = 0;
+        }
+        slides[slideIndex - 1].style.display = "block";
+        fadeIn(slides[slideIndex - 1]);
+    }
+
+    function fadeIn(element) {
+        var opacity = 0;
+        var timer = setInterval(function() {
+            if (opacity >= 1) {
+                clearInterval(timer);
+            }
+            element.style.opacity = opacity;
+            opacity += 0.1;
+        }, 50);
+    }
+</script>
 
 {% endblock %}
