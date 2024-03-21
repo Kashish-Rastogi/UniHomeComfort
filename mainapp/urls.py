@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (landingpage, loginpage, community_posts_list, update_community_post,
                     delete_community_post, property_detail, viewbiddedproperties, studentallproperties,
                     bidding, property_listing, register_student_user, ownerviewallproperties,
-                    delete_property, property_owner_register, owneraddproperty, create_community_post)
+                    delete_property, property_owner_register, owneraddproperty, create_community_post,aboutus,settings_user)
 
 myapp_name = 'mainapp'
 
@@ -20,6 +20,8 @@ urlpatterns = [
 
 # ################# Parth #################
     path('bidding/<int:property_id>', bidding, name='bidding'),
+    path('settings_user/', settings_user, name='settings_user'),
+    path('aboutus/', aboutus, name='aboutus'),
 # ################# Parth #################
 
 # ################# Jainam #################

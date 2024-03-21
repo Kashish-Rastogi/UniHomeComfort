@@ -199,23 +199,36 @@ def property_detail(request):
 # ################# Parth #################
 def bidding(request, property_id):
     property_data = get_object_or_404(Property, pk=property_id)
-    max_bidding_amount = \
-    Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
+    max_bidding_amount= Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
         'max_bidding_amount']
+    if max_bidding_amount is None:
+        max_bidding_amount = property_data.bidding_min_limit
 
     # print(property_data.prop_image1)
     if request.method == "POST":
         form = BidForm(request.POST)
         if form.is_valid():
             form = form.save(commit=False)
-            form.bidding_status = 'accepted'
-            form.bidding_amount = form.cleaned_data['bidding_amount']
+            form.bidding_status = 'pending'
+            form.property_id = property_id
+            form.payment_status = 'pending'
+            student = AppUser.objects.get(username=request.user.username)
+            form.student = student
+            # form.bidding_amount = form.cleaned_data['bidding_amount']
             form.save()
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = BidForm(initial={'bidding_amount': max_bidding_amount or 2000})  # Example current bid
-    return render(request, 'mainapp/bidding.html',
-                  {'form': form, 'property_data': property_data, 'max_bidding_amount': max_bidding_amount})
+    return render(request, 'mainapp/bidding.html',{'form': form, 'property_data': property_data,'max_bidding_amount': max_bidding_amount})
 
+def aboutus(request):
+    return render(request, 'mainapp/aboutus.html')
+
+def settings_user(request):
+    return render(request, 'mainapp/settings_user.html')
 
 # ################# Parth #################
 

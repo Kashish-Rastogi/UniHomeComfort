@@ -158,7 +158,7 @@ class PropertyForm(forms.ModelForm):
 class BidForm(forms.ModelForm):
     class Meta:
         model = Bidding
-        fields = ['bidding_amount', 'bidding_status']
+        fields = ['bidding_amount']
 
 
 # ################# Parth #################
