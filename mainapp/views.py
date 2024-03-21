@@ -218,12 +218,12 @@ def landingpage(request):
 
 # ################# Kashish #################
 @login_required(login_url='/login/')
-def ownerviewallproperties(request):
+def owner_view_all_properties(request):
     property_type = request.GET.get('property_type', '')
     types = PropertyType.objects.all()  # Fetch all categories from database
     print(types)
     if property_type and property_type != 'all':
-        properties = (Property.objects.filter(owner=request.user).filter(property_type__id=property_type))
+        properties = (Property.objects.filter(owner=request.user).filter(property_type=property_type.lower()))
     else:
         properties = Property.objects.filter(owner=request.user)
 
@@ -234,7 +234,7 @@ def ownerviewallproperties(request):
     })
 
 @login_required(login_url='/login/')
-def owneraddproperty(request):
+def owner_add_property(request):
     if request.method == 'POST':
         form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
@@ -253,25 +253,71 @@ def owneraddproperty(request):
         form = PropertyForm()
     return render(request, 'mainapp/owner-add-property.html', {'property_form': form})
 
+@login_required(login_url='/login/')
+def owner_edit_property(request, property_id):
+    property = get_object_or_404(Property, id=property_id, owner=request.user)
+    if request.method == 'POST':
+        form = PropertyForm(request.POST, request.FILES, instance=property)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Property updated successfully.")
+            return redirect('owner-view-all-properties')  # Redirect to the property listing
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = PropertyForm(instance=property)
 
+    return render(request, 'mainapp/owner-edit-property.html', {
+        'property_form': form,
+        'property': property
+    })
 
-def delete_property(request, property_id):
+def owner_delete_property(request, property_id):
     property_instance = get_object_or_404(Property, id=property_id)
     property_instance.delete()
     return redirect('owner-view-all-properties')
 
+def property_detail(request, property_id):
+    property = get_object_or_404(Property,id=property_id)
+    if request.user.is_authenticated:
+        if 'visited_properties' not in request.session:
+            request.session['visited_properties'] = []
+        visited_properties = request.session['visited_properties']
 
-def property_detail(request):
-    # try:
-    #     property = Property.objects.get(pk=property_id)
-    # except Property.DoesNotExist:
-    #     return render(request, '', status=404)
-    # context = {
-    #     'property': property,
-    # }
-     return render(request, 'mainapp/property-details.html')
-    # , context)
+        if property_id not in visited_properties:
+            visited_properties.append(property_id)
+            request.session['visited_properties'] = visited_properties
+    return render(request, 'mainapp/property-details.html', {'property': property})
 
+def owner_property_bids(request):
+    property_type = request.GET.get('property_type', '')
+    selected_property = request.GET.get('selected_property', '')
+    types = PropertyType.objects.all()  # Assuming this is for display purposes in the template
+    owner_properties = Property.objects.filter(owner=request.user)  # Assuming this is for display purposes in the template
+
+    if property_type and property_type != 'all':
+        # Filter properties directly by property_type value, not by property_type__id
+        properties = Property.objects.filter(owner=request.user, property_type=property_type.lower())
+    else:
+        # Fetch all properties for this owner if no specific type is requested or 'all' is specified
+        properties = Property.objects.filter(owner=request.user)
+
+    if selected_property and selected_property != 'all':
+        properties = properties.filter(id=selected_property)
+
+    properties = properties.values_list('id',flat=True)
+    # Filter bids where property_id is in the list of properties' ids
+    bids = Bidding.objects.filter(property__id__in=list(properties)).order_by('-time')
+
+    return render(request, 'mainapp/owner-property-bids.html', {
+        'bids': bids,
+        'types': types,
+        'selected_property_type': property_type,
+        'owner_properties':owner_properties,
+        'selected_property':selected_property
+    })
 
 # ################# Kashsih #################
 

@@ -9,23 +9,16 @@
                     Dashboard</h1>
                 <ul class="space-y-2">
                     <li >
-                        <button class="p-2  flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
+                        <a href="{% url 'owner-view-all-properties' %}" class="p-2  flex items-center bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
                             <span>My Properties</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <ul class="pl-4 mt-2 space-y-2 " id="myPropertiesSubmenu">
-                            <li class="p-2 bg-gray-900 rounded-xl ">
-                                <a href="#" class="text-gray-300 hover:text-white">All Properties</a>
-                            </li>
-                            <li class="p-2 hover:bg-gray-900 rounded-xl ">
-                                <a href="#" class="text-gray-300 hover:text-white">Published Properties</a>
-                            </li>
-                            </ul>
+                        </a>
+
                     </li>
                     <li >
-                        <button class="p-2  hover:bg-gray-900 rounded-xl  flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                        <a class="p-2 hover:bg-gray-900 rounded-xl  flex items-center justify-between w-full text-left text-gray-300 hover:text-white"
+                            href={% url 'owner-property-bids' %}>
                             <span>Property Bids</span>
-                        </button>
+                        </a>
 
                     </li>
                     <li>
@@ -63,7 +56,7 @@
                                     class="flex-1 border border-gray-300 rounded-lg py-2 px-4">
                               <option value="all">All</option>
                               {% for type in types %}
-                                <option value="{{ type.id }}" {% if selected_property_type|default:'all' == type.id|stringformat:"s" %}selected{% endif %}>{{ type.title }}</option>
+                                <option value="{{ type }}" {% if selected_property_type|default:'all' == type|stringformat:"s" %}selected{% endif %}>{{ type.title }}</option>
                               {% endfor %}
                             </select>
                         </div>
@@ -91,7 +84,7 @@
         </thead>
         <tbody class="rounded-xl">
         {% for pro in properties %}
-            <tr class="item-center justify-center">
+            <tr class="item-center justify-center border-b-2 border-black-500">
                 <td class="w-5/12" style="width: 40%">
                     <div>
                         <a href="#" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -99,7 +92,7 @@
                             <div class="flex justify-start item-start flex-col p-2 leading-normal ">
                                 <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ pro.title }}</p>
                                 <p class="font-normal text-gray-700 dark:text-gray-400">{{ pro.city }}, {{ pro.zipcode }}</p>
-                                <p class="text-sm font-normal text-gray-700 dark:text-gray-400 -mt-2">Expires on: {{ pro.expire }}</p>
+                                <p class="text-sm font-normal text-gray-700 dark:text-gray-400 -mt-2">Expires on: {{ pro.bidding_end_date }}</p>
                                   <div class="flex gap-4 mt-1.5">
                                     <div class="flex flex-col">
                                       <div class=" text-sm font-bold">Bedrooms </div>
@@ -122,9 +115,9 @@
                     </div>
                 </td>
                 <td class="text-center" style="width: 10%;">{{ pro.property_type | upper}}</td>
-                <td class="text-center">Published</td>
+                <td class="text-center">{{ pro.availability_status }}</td>
                 <td class="text-center">${{ pro.price }}</td>
-                <td class="text-center" >${{ pro.bidding_min_limit }}<br>123</td>
+                <td class="text-center" >${{ pro.bidding_min_limit }}</td>
                 <td class="text-center" style="width: 20%;">
                     <!--
                         <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Draft</button>
@@ -133,10 +126,15 @@
                      -->
                     <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">Waiting For Approval</button>
                 </td>
-                 <td class="text-center" style="width: 5%;">
-                     <a href="{% url 'delete-property' pro.id %}">
+                 <td class="text-center">
+                     <a class="mr-3"
+                             href="{% url 'owner-edit-property' pro.id %}">
+                         <i class="fas fa-edit"></i>
+                     </a>
+                     <a href="{% url 'owner-delete-property' pro.id %}">
                          <i class="fa-solid fa-trash"></i>
                      </a>
+
                  </td>
             </tr>
         {% endfor %}

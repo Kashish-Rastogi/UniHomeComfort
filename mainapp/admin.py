@@ -14,10 +14,13 @@ class AppUserAdmin(admin.ModelAdmin):
 class BiddingAdmin(admin.ModelAdmin):
     list_display = ['id', 'property', 'student', 'bidding_amount']
 
+class PropertyAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'owner', 'zipcode']
+
 
 admin.site.register(AppUser, AppUserAdmin)
 admin.site.register(Institute)
-admin.site.register(Property)
+admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyType)
 admin.site.register(Bidding, BiddingAdmin)
 admin.site.register(Forum)

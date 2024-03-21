@@ -1,0 +1,148 @@
+{% extends 'mainapp/base.html' %}
+{% block body_block %}
+
+<div class="flex justify-center items-center bg-gray-100 py-10">
+    <div class="flex justify-center bg-white flex-col p-10 shadow-lg rounded-lg w-3/4 -mt-4">
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="flex flex-col">
+            <h1 class="text-3xl font-bold flex-1 -mt-4">Add Property Details</h1>
+            <div class="flex-1 flex flex-wrap gap-4 items-center mt-4">
+                <div class="flex flex-1 flex-col">
+                    <label for="{{ property_form.title.id_for_label }}" class="formlabel">Property Title</label>
+                   {{ property_form.title }}
+                </div>
+                <div class="flex flex-1 gap-4">
+                    <div class="flex flex-1 flex-col">
+                        <label for="{{ property_form.availability_status.id_for_label }}" class="formlabel">Availability Status</label>
+                        {{ property_form.availability_status }}
+                     </div>
+                    <div class="flex flex-1 flex-col">
+                        <label for="property_type" class="formlabel">{{ property_form.property_type.id_for_label }}</label>
+                            {{ property_form.property_type }}
+                    </div>
+                </div>
+            </div>
+           </div>
+
+
+            <div class="flex flex-wrap mt-4 gap-4">
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.address.id_for_label }}" class="formlabel">Address</label>
+                    {{ property_form.address }}
+                </div>
+                <div class="flex flex-1 gap-4">
+                    <div class="flex flex-col flex-1">
+                        <label for="{{ property_form.city.id_for_label }}" class="formlabel">City</label>
+                        {{ property_form.city }}
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <label for="{{ property_form.zipcode.id_for_label }}" class="formlabel">Zipcode</label>
+                        {{ property_form.zipcode }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-4 w-full mt-4">
+                <div class="flex flex-1 flex-col">
+                        <label for="{{ property_form.amenities.id_for_label }}" class="formlabel">Amenities</label>
+                        {{ property_form.amenities }}
+                </div>
+                <div class="flex flex-1 flex-col">
+                        <label for="{{ property_form.rules.id_for_label }}" class="formlabel">Rules</label>
+                        {{ property_form.rules }}
+                </div>
+            </div>
+
+            <h3 class="text-3xl font-bold mt-6">Property Details</h3>
+            <hr class="mt-2">
+           <div class="flex flex-wrap mt-4 gap-4">
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.number_of_bedrooms.id_for_label }}">No of Bedrooms</label>
+                    {{ property_form.number_of_bedrooms }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.number_of_bathrooms.id_for_label }}">No of Bathrooms</label>
+                    {{ property_form.number_of_bathrooms }}
+                </div>
+                <div class="flex flex-col flex-1 ">
+                    <label for="{{ property_form.allowed_lease_people.id_for_label }}">Allowed People in house</label>
+                    {{ property_form.allowed_lease_people }}
+                </div>
+
+            </div>
+
+            <div class="flex flex-wrap mt-6 gap-4 w-2/3">
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.available_from.id_for_label }}">Available From</label>
+                    {{ property_form.available_from }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.lease_duration.id_for_label }}">Lease Duration</label>
+                    {{ property_form.lease_duration }}
+                </div>
+
+            </div>
+
+            <div class="flex flex-wrap mt-4 gap-4">
+                <div class="flex flex-wrap w-1/2">
+                    <div class="flex flex-col flex-1">
+                        {{ property_form.is_biddable }}
+                        <label for="{{ property_form.is_biddable.id_for_label }}">Biddable</label>
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <label for="{{ property_form.bidding_min_limit.id_for_label }}">Bidding Min Limit</label>
+                        {{ property_form.bidding_min_limit }}
+                    </div>
+            </div>
+                <div class="flex flex-wrap gap-4 w-1/2">
+                 <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.bidding_end_date.id_for_label }}">Bidding End Date</label>
+                    {{ property_form.bidding_end_date }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.price.id_for_label }}">Price</label>
+                    {{ property_form.price }}
+                </div>
+                    </div>
+            </div>
+
+            <div class="flex flex-wrap mt-12 gap-4 ">
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image1.id_for_label }}">Property Image-1</label>
+                    {{ property_form.prop_image1 }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image2.id_for_label }}">Property Image-2</label>
+                    {{ property_form.prop_image2 }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image3.id_for_label }}">Property Image-3</label>
+                    {{ property_form.prop_image3 }}
+                </div>
+            </div>
+            <div class="flex flex-wrap mt-4 gap-4 w-2/3">
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image4.id_for_label }}">Property Image-4</label>
+                    {{ property_form.prop_image4 }}
+                </div>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image5.id_for_label }}">Property Image-5</label>
+                    {{ property_form.prop_image5 }}
+                </div>
+            </div>
+             {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+{#            href="{% url 'owner-add-property' %}"#}
+            <button type="submit"
+               class="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700"> Add Property
+            </button>
+                </form>
+    </div>
+</div>
+
+{% endblock %}
