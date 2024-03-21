@@ -164,9 +164,52 @@ class BidForm(forms.ModelForm):
 # ################# Parth #################
 
 # ################# Tanvi #################
-class PropertyOwnerRegistrationForm(forms.ModelForm):
+# ################# Tanvi #################
+class PropertyOwnerRegistrationForm(UserCreationForm):
     class Meta:
         model = AppUser
-        fields = ['username', 'password', 'email', 'country_code', 'mobile_no', 'age', 'address', 'state', 'city',
-                  'zip_code', 'occupation', 'identification']
+        fields = ['first_name', 'last_name', 'username','email','password1','password2', 'country_code', 'mobile_no', 'age', 'gender','address', 'state', 'city',
+                  'zip_code', 'occupation','proofidentity', 'identification', 'rental_license']
+        widgets = {
+            'username': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Username'}),
+            'password1': forms.PasswordInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Password'}),
+            'password2': forms.PasswordInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true',
+                                                    'placeholder': 'Confirm Password'}),
+            'first_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                'placeholder': 'Last Name'}),
+            'email': forms.EmailInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
+            # 'country_code': forms.select(attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true',
+            #                                          'placeholder': 'Country Code'}),
+            'country_code': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
+            'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                  'placeholder': 'Mobile No.'}),
+            'age': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Age'}),
+            'gender': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'address': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Address'}),
+            'state': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'city': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'City'}),
+            'zip_code': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Zip Code'}),
+            'occupation': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'proofidentity': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
+            'identification': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'rental_license': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(PropertyOwnerRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget = forms.PasswordInput(
+            attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Password'})
+        self.fields['password2'].widget = forms.PasswordInput(
+            attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                   'placeholder': 'Confirm Password'})
+
 # ################# Tanvi #################

@@ -143,14 +143,21 @@ def studentallproperties(request):
 # ################# Tanvi #################
 def property_owner_register(request):
     if request.method == 'POST':
-        form = PropertyOwnerRegistrationForm(request.POST)
+        form = PropertyOwnerRegistrationForm(request.POST, request.FILES)  # Ensure to handle FILES if your form includes file uploads
         if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirect to the login page after registration
+            owner_form = form.save(commit=False)
+            owner_form.is_owner = True
+            owner_form.is_student = False
+            owner_form.save()
+            return redirect('login-page')  # Redirect to the login page after registration
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = PropertyOwnerRegistrationForm()
-    return render(request, 'mainapp/register.html', {'form': form})
 
+    return render(request, 'mainapp/register.html', {'form': form})
 
 def property_listing(request):
     # Retrieve all properties from the database
@@ -160,7 +167,6 @@ def property_listing(request):
     context = {
         'properties': properties
     }
-
 
 # ################# Tanvi #################
 

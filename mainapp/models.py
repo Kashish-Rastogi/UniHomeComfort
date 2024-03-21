@@ -68,7 +68,13 @@ class AppUser(User):
         parent_link=True,
         default=None  # Add a default value here
     )
-    country_code = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)])
+    CODES = [
+        (1, "+1   (Canada)"),
+        (44, "+44  (UK)"),
+        (91, "+91  (India)"),
+        (61, "+61  (Australia)"),
+    ]
+    country_code = models.IntegerField(default=1, choices=CODES, null=True, blank=True)
     mobile_no = models.IntegerField(validators=[MinValueValidator(1_000_000_000), MaxValueValidator(9_999_999_999)])
     age = models.IntegerField()
     address = models.CharField(max_length=150)
@@ -85,11 +91,17 @@ class AppUser(User):
         (1, "Business"),
         (2, "Unemployed"),
     ]
+    IDENTIFICATION_TYPES = [
+        (0, "Passport"),
+        (1, "Driving License"),
+        (2, "Photo ID"),
+    ]
     identification = models.FileField(upload_to='documents/owner/identifications/', null=True, blank=True)
+    rental_license = models.FileField(upload_to='documents/owner/rental_license/', null=True, blank=True)
     occupation = models.IntegerField(default=0, choices=OCCUPATION_TYPES, null=True, blank=True)
+    proofidentity = models.IntegerField(default=0, choices=IDENTIFICATION_TYPES, null=True, blank=True)
     is_student = models.BooleanField(default=True)
     is_owner = models.BooleanField(default=False)
-
     def __str__(self):
         return str(self.first_name)
 
