@@ -93,6 +93,7 @@ class AppUser(User):
     def __str__(self):
         return str(self.first_name)
 
+
 class PropertyType(models.Model):
     title = models.CharField(max_length=255)
 

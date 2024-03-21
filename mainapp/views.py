@@ -11,7 +11,7 @@ from .models import Property
 from django.db.models import Max
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
+from django.db.models import Max, Count
 
 # ################# Jainam #################
 def loginpage(request):
@@ -55,8 +55,81 @@ def register_student_user(request):
     return render(request, 'mainapp/register-student-user.html', {'form': form})
 
 
+@login_required(login_url='/login/')
 def viewbiddedproperties(request):
-    return render(request, 'mainapp/view-bidded-properties.html')
+    property_type = request.GET.get('property_type', '')
+    bidding_status = request.GET.get('bidding_status', '')
+    types = PropertyType.objects.all()  # Fetch all categories from database
+    bidding_grouped_by_property = Bidding.objects.filter(student=request.user) \
+        .values('property_id') \
+        .annotate(max_bid_amount=Max('bidding_amount'))
+
+    # Extract the IDs of the highest bid for each property
+    highest_bid_ids = []
+    for entry in bidding_grouped_by_property:
+        property_id = entry['property_id']
+        max_bid_amount = entry['max_bid_amount']
+        highest_bid = Bidding.objects.filter(property_id=property_id, bidding_amount=max_bid_amount).first()
+        if highest_bid:
+            highest_bid_ids.append(highest_bid.id)
+
+    highest_bid_from_all_users = Bidding.objects.values('property_id') \
+        .annotate(max_bid_amount=Max('bidding_amount'))
+
+    # Extract the IDs of the highest bid for each property
+    highest_bid_from_all_users_ids = []
+    for entry in highest_bid_from_all_users:
+        property_id = entry['property_id']
+        max_bid_amount = entry['max_bid_amount']
+        highest_bid = Bidding.objects.filter(property_id=property_id, bidding_amount=max_bid_amount).first()
+        if highest_bid:
+            highest_bid_from_all_users_ids.append(highest_bid.id)
+
+    # Print the IDs of the highest bid for each property
+    print("IDs of the highest bid for each property:")
+    print(highest_bid_ids,highest_bid_from_all_users_ids)
+
+    bidded_properties_ids = Bidding.objects.filter(student=request.user) \
+        .values('student_id') \
+        .annotate(max_bid_amount=Max('bidding_amount')) \
+        .values_list('property_id', flat=True)
+    # print(highest_biddin_ids)
+    if property_type and property_type != 'all':
+        properties = (Property.objects.filter(id__in=bidded_properties_ids).filter(property_type=property_type.lower()))
+        print(Property.objects.filter(id__in=bidded_properties_ids).values_list('property_type',flat=True))
+    else:
+        properties = Property.objects.filter(id__in=bidded_properties_ids)
+
+    property_bidding_statuses = {}
+    property_bidding_highest_price = {}
+    property_highest_bidding = {}
+    for property_id in bidded_properties_ids:
+        try:
+            bidding = Bidding.objects.get(property_id=property_id, student=request.user, id__in=highest_bid_ids)
+            highest_bidding = Bidding.objects.get(property_id=property_id, id__in=highest_bid_from_all_users_ids)
+            property_bidding_statuses[property_id] = bidding.bidding_status
+            property_bidding_highest_price[property_id] = bidding.bidding_amount
+            property_highest_bidding[property_id] = highest_bidding.bidding_amount
+        except Bidding.DoesNotExist:
+            property_bidding_statuses[property_id] = None
+
+
+    for prop in properties:
+        prop.bidding_status = property_bidding_statuses.get(prop.id)
+        prop.user_bid = property_bidding_highest_price.get(prop.id)
+        prop.bidding_highest_price = property_highest_bidding.get(prop.id)
+
+    if bidding_status and bidding_status != 'all':
+        properties = [prop for prop in properties if prop.bidding_status == bidding_status]
+
+    return render(request, 'mainapp/view-bidded-properties.html', {
+        'properties': properties,
+        'types': types,
+        'bidding_statuses':['pending','accepted', 'rejected'],
+        'bidding_status':bidding_status,
+        'selected_property_type': property_type
+    })
+
 
 
 def studentallproperties(request):

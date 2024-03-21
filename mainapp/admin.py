@@ -11,11 +11,15 @@ def user_type(obj):
 class AppUserAdmin(admin.ModelAdmin):
     list_display = ['username', 'first_name', 'last_name', user_type]
 
+class BiddingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'property', 'student', 'bidding_amount']
+
+
 admin.site.register(AppUser, AppUserAdmin)
 admin.site.register(Institute)
 admin.site.register(Property)
 admin.site.register(PropertyType)
-admin.site.register(Bidding)
+admin.site.register(Bidding, BiddingAdmin)
 admin.site.register(Forum)
 admin.site.register(PropertyDocument)
 admin.site.register(Category)
