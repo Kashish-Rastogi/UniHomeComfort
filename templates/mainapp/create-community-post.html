@@ -1,42 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Community Post</title>
-  </head>
-<body>
-  {% extends 'mainapp/base.html' %}  {% block body_block %}
-    <div class="flex h-screen items-center justify-center">
-      <div class="w-full max-w-2xl px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-        <h2 class="text-2xl font-bold text-center text-gray-700 mb-8">Create a New Post</h2>
+<html>
+  <style>
+    body {
+      overflow: hidden;
+    }
+  </style>
+  <body>
+    {% extends 'mainapp/base.html' %}  {% block body_block %}
+    <div
+         class="flex h-screen items-center justify-center p-12 justify-center items-center overflow-hidden">
+      <div style="background: #202d49" class="w-full max-w-2xl px-6 py-4 shadow-2xl overflow-hidden rounded-2xl">
+        <h2 class="text-3xl font-bold text-center text-white mb-8">Create a New Post</h2>
         <form method="post" action="{% url 'create_community_post' %}">
           {% csrf_token %}
           <div class="mt-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Category</label>
-            <select class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="category" id="category">
+            <label class="block text-white text-sm font-bold mb-2" for="category">Category</label>
+            <select class="shadow border border-gray-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="category" id="category">
               <option value="">Select a category</option>
               {% for category in categories %}
               <option value="{{ category.id }}" {% if form.category.value == category.id %}selected{% endif %}>{{ category.name }}</option>
               {% endfor %}
             </select>
           </div>
-          <div class="mt-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">Title</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Enter the title here" name="title" id="title">
+          <div class="mt-6">
+            <label class="block text-white text-sm font-bold mb-2" for="title">Title</label>
+            <input class="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Enter the title here" name="title" id="title">
           </div>
-          <div class="mt-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="content">Content</label>
-            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" rows="4" placeholder="Enter your content here" name="content" id="content"></textarea>
+          <div class="mt-6">
+            <label class="block text-white text-sm font-bold mb-2" for="content">Content</label>
+            <textarea class="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" rows="4" placeholder="Enter your content here" name="content" id="content"></textarea>
           </div>
           <div class="flex items-center justify-between mt-8">
-            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="submit">
+            <button class="px-10 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 focus:outline-none focus:shadow-outline" type="submit">
               Post
             </button>
           </div>
         </form>
       </div>
     </div>
-  {% endblock %}
-</body>
+    {% endblock %}
+  </body>
 </html>
