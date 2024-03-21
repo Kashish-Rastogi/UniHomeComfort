@@ -77,7 +77,7 @@ class AppUser(User):
     zip_code = models.CharField(max_length=7)
     created_at = models.DateTimeField(default=timezone.now)
     gender = models.CharField(max_length=7, choices=GENDER, default='Female')
-    offer_letter = models.ImageField(upload_to='documents/offer_letters/', null=True, blank=True)
+    offer_letter = models.FileField(upload_to='documents/offer_letters/', null=True, blank=True)
     country = models.CharField(max_length=255)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, null=True, blank=True)
     OCCUPATION_TYPES = [
@@ -85,7 +85,7 @@ class AppUser(User):
         (1, "Business"),
         (2, "Unemployed"),
     ]
-    identification = models.ImageField(upload_to='documents/owner/identifications/', null=True, blank=True)
+    identification = models.FileField(upload_to='documents/owner/identifications/', null=True, blank=True)
     occupation = models.IntegerField(default=0, choices=OCCUPATION_TYPES, null=True, blank=True)
     is_student = models.BooleanField(default=True)
     is_owner = models.BooleanField(default=False)
