@@ -29,12 +29,33 @@ It is an online platform designed to cater to the needs of international student
     * Property - Haseeb
 
 ### Sprint 2 (Feb 20th - Mar 10th):
-* **Views Creation**
-  * **User Authentication System:** Kashish, Tanvi
-  * **User Registration & Login:** Tanvi, Parth
-  * **Property Listings & Details:** Kashish, Jainam
-  * **Add Property & Bidding:** Haseeb, Hetansh
-  * **Community Form:** Parth
-  * **User Profile:** Haseeb
+* **Views Creation:**
+  * **Student Registration & Login:** Jainam
+  * **Stduent Dashboard:** Jainam
+  * **Property Details:** Kashish
+  * **Owner Dashboard:** Kashish
+  * **Student Registration:** Tanvi
+  * **Property Listings:** Tanvi
+  * **Community Form:** Hetansh
+  * **Bidding:** Parth
 
+### Sprint 3 (Feb 20th - Mar 10th):
+* **Template Creation:**
+* **Jainam**:
+   * Login
+   * Student Register,
+   * Student Dashboard,
+   * Student all properties
+   * View bidded properties
 
+* **Kashish**:
+   * Property Details
+   * Owner Dashboard
+ 
+* **Tanvi**: 
+  * Student Registration
+  * Property Listings
+ 
+* **Haseeb**:
+  * Community Form
+  * Bidding
