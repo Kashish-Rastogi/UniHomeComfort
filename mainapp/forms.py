@@ -164,7 +164,7 @@ class BidForm(forms.ModelForm):
 # ################# Parth #################
 
 # ################# Tanvi #################
-# ################# Tanvi #################
+
 class PropertyOwnerRegistrationForm(UserCreationForm):
     class Meta:
         model = AppUser
@@ -212,4 +212,36 @@ class PropertyOwnerRegistrationForm(UserCreationForm):
             attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
                    'placeholder': 'Confirm Password'})
 
+
+class StudentSettingsForm(forms.ModelForm):
+    class Meta:
+        model = AppUser
+        fields = ['first_name','last_name','email','country_code', 'mobile_no', 'age', 'address', 'state',
+                  'city', 'zip_code', 'gender', 'country', 'institute']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                 'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                'placeholder': 'Last name'}),
+            'email': forms.EmailInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
+            'country_code': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true', 'placeholder': '1'}),
+            'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                  'placeholder': 'Mobile no.'}),
+            'age': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Age'}),
+            'address': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Address'}),
+            'state': forms.Select(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'State'}),
+            'city': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'City'}),
+            'zip_code': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Zip code'}),
+            'gender': forms.RadioSelect(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'},
+                                        choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]),
+            'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+        }
 # ################# Tanvi #################

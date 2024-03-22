@@ -140,6 +140,21 @@ def studentallproperties(request):
 
 # ################# Jainam #################
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .forms import PropertyOwnerRegistrationForm
+from .models import Property
+from django.db.models import Max
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib import messages
+from django.db.models import Max, Count
+
 # ################# Tanvi #################
 def property_owner_register(request):
     if request.method == 'POST':
@@ -167,7 +182,29 @@ def property_listing(request):
     context = {
         'properties': properties
     }
+    return render(request, 'mainapp/property_listing.html', context)
 
+@login_required
+def student_settings(request):
+    user = AppUser.objects.get(username=request.user.username)
+    if request.method == 'POST':
+        user_form = StudentSettingsForm(request.POST, instance=user)
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if user_form.is_valid() and (not password_form.is_bound or password_form.is_valid()):
+            user_form.save()
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)  # Important for keeping the user logged in
+                messages.success(request, 'Password has been updated.')
+            messages.success(request, 'Your settings have been updated.')
+            return redirect('student_settings')
+    else:
+        user_form = StudentSettingsForm(instance=user)
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'mainapp/student_settings.html', {
+        'form': user_form,
+        'password_form': password_form
+    })
 # ################# Tanvi #################
 
 # ################# Kashish + Hetansh #################
