@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType
+from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType, \
+    CommunityPost
 
 
 def user_type(obj):
@@ -26,3 +27,4 @@ admin.site.register(Bidding, BiddingAdmin)
 admin.site.register(Forum)
 admin.site.register(PropertyDocument)
 admin.site.register(Category)
+admin.site.register(CommunityPost)

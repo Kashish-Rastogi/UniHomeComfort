@@ -478,6 +478,17 @@ def delete_community_post(request, pk):
         return HttpResponseForbidden()
     post.delete()
     return redirect('community_posts_list')
+
+#@login_required
+def view_my_posts(request):
+    categories = Category.objects.all()
+    posts = CommunityPost.objects.filter(author=request.user).order_by('-created_at')
+
+    return render(request, 'mainapp/my-community-posts.html', {
+        'posts': posts,
+        'categories': categories
+    })
+
 # ################# Hetansh #################
 
 

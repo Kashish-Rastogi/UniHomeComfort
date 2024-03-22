@@ -4,7 +4,7 @@ from .views import (landingpage, loginpage, community_posts_list, update_communi
                     bidding, property_listing, register_student_user, owner_view_all_properties,
                     owner_delete_property, property_owner_register, owner_add_property, create_community_post, aboutus,
                     settings_user,
-                    owner_property_bids, owner_edit_property, student_settings)
+                    owner_property_bids, owner_edit_property, student_settings,view_my_posts)
 
 myapp_name = 'mainapp'
 
@@ -40,6 +40,7 @@ urlpatterns = [
 
 # ################# Hetansh #################
     path('community/', community_posts_list, name='community_posts_list'),
+    path('my-posts/', view_my_posts, name='view_my_posts'),
     path('community/create/', create_community_post, name='create_community_post'),
     path('community/update/<int:pk>/', update_community_post, name='update_community_post'),
     path('community/delete/<int:pk>/', delete_community_post, name='delete_community_post'),
