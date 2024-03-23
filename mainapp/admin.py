@@ -30,4 +30,3 @@ admin.site.register(Category)
 admin.site.register(CommunityPost)
 admin.site.register(PropertyVisits)
 admin.site.register(City)
-

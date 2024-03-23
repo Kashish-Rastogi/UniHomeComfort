@@ -1,21 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm
+from django.views.decorators.http import require_POST
 from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, GroupChat, Message
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import PropertyOwnerRegistrationForm
 from .models import Property
 from django.db.models import Max
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Max, Count
-
 # ################# Jainam #################
 def loginpage(request):
     if request.user.is_authenticated:
@@ -46,8 +49,10 @@ def loginpage(request):
                     user.is_owner = user_instance.is_owner
                     login(request, user)
                     messages.success(request, 'You have been successfully logged in.')
-                    print(request.user.is_student, request.user.is_owner)
-
+                    if user_instance.is_student:
+                        request.session['user_type'] = 'student'
+                    elif user_instance.is_owner:
+                        request.session['user_type'] = 'owner'
                     property_visits = PropertyVisits.objects.filter(user=user_instance)
                     if property_visits.count() > 0:
                         request.session['visited_properties'] = eval(property_visits[0].visited_properties)
@@ -58,14 +63,15 @@ def loginpage(request):
         form = LoginForm()
     return render(request, 'mainapp/login.html', {'form': form})
 
-
 def register_student_user(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # login(request, user)
-            messages.success(request, 'Registration successful. You are now logged in.')
+            user = form.save(commit=False)
+            user.is_owner = False
+            user.is_student = True
+            user.save()
+            messages.success(request, 'Registration successful. Try to login into your own account.')
             return redirect('login-page')
         else:
             for field, errors in form.errors.items():
@@ -74,6 +80,7 @@ def register_student_user(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'mainapp/register-student-user.html', {'form': form})
+
 
 
 @login_required(login_url='/login/')
@@ -159,22 +166,57 @@ def studentallproperties(request):
     return render(request, 'mainapp/student-all-properties.html')
 
 
+@login_required(login_url='/login/')
+def view_chat(request, post_id=None):
+    posts = CommunityPost.objects.all().order_by('-created_at')
+    post = None
+    chat = None
+    messages = None
+    if post_id:
+        post = get_object_or_404(CommunityPost, pk=post_id)
+        chat, created = GroupChat.objects.get_or_create(post=post)
+        messages = chat.messages.all().order_by('timestamp')
+
+        if request.method == 'POST':
+            content = request.POST.get('message')
+            if content:
+                Message.objects.create(chat=chat, author=request.user, content=content)
+                return redirect('view_chat', post_id=post_id)
+
+    context = {
+        'posts': posts,
+        'post': post,
+        'chat': chat,
+        'messages': messages,
+        'user_can_post': request.user.is_authenticated,
+    }
+
+    return render(request, 'mainapp/view_chat.html', context)
+
+@login_required(login_url='/login/')
+@require_POST
+def send_message(request):
+    chat_id = request.POST.get('chat_id')
+    content = request.POST.get('message')
+    print(chat_id,content)
+    if content:
+        chat = get_object_or_404(GroupChat, pk=chat_id)
+        user = AppUser.objects.get(username=request.user.username)
+        message = Message.objects.create(chat=chat, author=user, content=content)
+
+        return JsonResponse({
+            'author': message.author.username,
+            'content': message.content,
+            'timestamp': message.timestamp.strftime('%H:%M'),
+            'status': 'success'
+        })
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+
 # ################# Jainam #################
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .forms import PropertyOwnerRegistrationForm
-from .models import Property
-from django.db.models import Max
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib import messages
-from django.db.models import Max, Count
+
 
 # ################# Tanvi #################
 def property_owner_register(request):
@@ -449,6 +491,7 @@ def create_community_post(request):
 
 def community_posts_list(request):
     category_id = request.GET.get('category_id', '')
+    search_post = request.GET.get('search_post', '')
     categories = Category.objects.all()  # Fetch all categories from database
     form = CommunityPostForm()  # Initialize the form
 
@@ -457,10 +500,13 @@ def community_posts_list(request):
     else:
         posts = CommunityPost.objects.all().order_by('-created_at')
 
+    if search_post:
+        posts = posts.filter(title__icontains=search_post)
     return render(request, 'mainapp/community-post-list.html', {
         'posts': posts,
         'categories': categories,
-        'selected_category_id': category_id
+        'selected_category_id': category_id,
+        'search_post':search_post
     })
 
 

@@ -244,7 +244,13 @@
       </div>
 
     {% endif %}
+
+
  </div>
+   <form class="flex flex-1 items-center gap-4 w-full" method="get" action="{% url 'community_posts_list' %}">
+        <input class="flex-1 rounded-lg  bg-white" name="search_post" placeholder="Search community post" {% if search_post %} value="{{ search_post }}" {% endif %}/>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
     <div class=" flex flex-col gap-3 mt-4">
       {% for post in posts %}
         <article class="rounded-lg  bg-white p-4">
@@ -252,10 +258,10 @@
             <h2 class="post-title text-xl font-bold">{{ post.title }}</h2>
           <p class="post-content text-gray-700 -mt-4">{{ post.content|truncatewords:30 }}</p>
           </div>
-{#          {% if user.is_authenticated %}#}
-{#          <div class="post-actions flex justify-content-end mt-6">  <a href="{% url 'view_chat' post.id %}" class="view-chat-button">#}
-{#              <i class="fa-solid fa-message"></i> View Chat</a>#}
-{#          {% endif %}#}
+          {% if user.is_authenticated %}
+          <div class="post-actions flex justify-content-end mt-6">  <a href="{% url 'view_chat' post.id %}" class="view-chat-button">
+              <i class="fa-solid fa-message"></i> View Chat</a>
+          {% endif %}
             {% if user == post.author or user.is_superuser %}
               <div class="flex items-center">  <a href="{% url 'update_community_post' post.pk %}" class="btn btn-primary px-4 py-2 mr-2">
                   <i class="fa-solid fa-pen-to-square"></i> Edit</a>

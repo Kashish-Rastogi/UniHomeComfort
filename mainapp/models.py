@@ -263,3 +263,13 @@ class PropertyVisits(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class GroupChat(models.Model):
+    post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='chats')
+
+
+class Message(models.Model):
+    chat = models.ForeignKey(GroupChat, on_delete=models.CASCADE, related_name='messages')
+    author = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)

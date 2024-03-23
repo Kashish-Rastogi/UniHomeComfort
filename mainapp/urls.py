@@ -4,7 +4,7 @@ from .views import (landingpage, loginpage, community_posts_list, update_communi
                     bidding, property_listing, register_student_user, owner_view_all_properties,
                     owner_delete_property, property_owner_register, owner_add_property, create_community_post, aboutus,
                     settings_user, user_property_visits,
-                    owner_property_bids, owner_edit_property, student_settings,view_my_posts)
+                    owner_property_bids, owner_edit_property, student_settings,view_my_posts, view_chat,send_message)
 
 myapp_name = 'mainapp'
 
@@ -36,7 +36,8 @@ urlpatterns = [
     path('register-student-user/', register_student_user, name='register-student-user'),
     path('view-bidded-properties/', viewbiddedproperties, name='view-bidded-properties'),
     path('student-all-properties/<int:student_id>/', studentallproperties, name='student-all-properties'),
-
+    path('chat/<int:post_id>', view_chat, name='view_chat'),
+    path('send-message/', send_message, name='send_message'),
 # ################# Jainam #################
 
 # ################# Hetansh #################
