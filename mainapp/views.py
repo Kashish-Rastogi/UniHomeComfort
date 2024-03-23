@@ -8,7 +8,7 @@ from .models import Property, CommunityPost, Category, Bidding, AppUser, Propert
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm,OwnerSettings
 from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, GroupChat, Message
 from django.core.mail import send_mail
 from django.conf import settings
@@ -466,8 +466,27 @@ def bidding(request, property_id):
 def aboutus(request):
     return render(request, 'mainapp/aboutus.html')
 
-def settings_user(request):
-    return render(request, 'mainapp/settings_user.html')
+@login_required
+def owner_settings(request):
+    user = AppUser.objects.get(username=request.user.username)
+    if request.method == 'POST':
+        user_form = OwnerSettings(request.POST, instance=user)
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if user_form.is_valid(): #and (not password_form.is_bound or password_form.is_valid()):
+            user_form.save()
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)  # Important for keeping the user logged in
+                messages.success(request, 'Password has been updated.')
+            messages.success(request, 'Your settings have been updated.')
+            return redirect('owner_settings')
+    else:
+        user_form = OwnerSettings(instance=user)
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'mainapp/owner_settings.html', {
+        'form': user_form,
+        'password_form': password_form
+    })
 
 # ################# Parth #################
 
