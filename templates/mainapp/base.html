@@ -46,17 +46,19 @@
             <!--  <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
         -->
         </div>
+
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
-            <a href={% url 'landing-page' %} class="bg-gray-700 text-white rounded-md px-3 py-2 text-base font-medium aria-current="page">Home</a>
-            <a href="{% url 'property_listing' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Accomodation</a>
-            <a href="{% url 'community_posts_list' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Community Forum</a>
-             <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Contact Us</a>
-          </div>
+            <a href="{% url 'landing-page' %}" class="hover:bg-gray-700 text-white rounded-md px-3 py-2 text-base font-medium {% if request.path == '/' %} bg-gray-700 {% endif %}">Home</a>
+            <a href="{% url 'property_listing' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium {% if request.path == '/property_listing/' %} bg-gray-700 {% endif %}">Accommodation</a>
+            <a href="{% url 'community_posts_list' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium {% if request.path == '/community/' %} bg-gray-700 {% endif %}">Community Forum</a>
+            <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium {% if request.path == '/contact-us/' %} bg-gray-900 {% endif %}">Contact Us</a>
+        </div>
+
         </div>
       </div>
       <div class=" right-0 flex gap-2 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
+        <p class="text-white">{{ request.path }}</p>
           {% if request.user.username%}
               <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                   <span class="absolute -inset-1.5"></span>
