@@ -20,4 +20,6 @@ urlpatterns = [
     path('community/update/<int:pk>/', views.update_community_post, name='update_community_post'),
     path('community/delete/<int:pk>/', views.delete_community_post, name='delete_community_post'),
     path('properties/<int:property_id>/', property_detail, name='property_detail'),
+    path('forget/', views.forget_password, name='forget'),
+
 ]

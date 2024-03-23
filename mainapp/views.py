@@ -11,6 +11,12 @@ from .models import Property
 from django.db.models import Max
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib import messages  # Import Django's messaging framework
+from datetime import timezone
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_mode
+from .forms import ForgetPasswordForm
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -246,3 +252,60 @@ def add_property(request):
 	property_form = PropertyForm()
 	return render(request, 'mainapp/owner-add-property.html', {'property_form':property_form})
 
+
+@login_required(login_url='mainapp/login-page')  # Ensure that only authenticated users can access this view
+def ownerdashboard(request):
+    current_time = timezone.now()  # Get the current time
+    """
+            Get properties where bidding has expired
+    """
+    expired_properties = Property.objects.filter(
+        bidding__time__lt=current_time,  # Filter properties where bidding time is less than the current time
+        bidding__bidding_status='pending'  # Filter properties with pending bidding status
+    ).distinct()  # Get distinct properties
+    """
+            # Update bidding status and send payment requests for expired properties
+    """
+    
+    for property in expired_properties:  # Iterate over expired properties
+        highest_bid = property.bidding_set.filter(bidding_status='pending').order_by('-bidding_amount').first()  # Get the highest bid for the property
+        if highest_bid:  # Check if there is a highest bid
+            highest_bid.bidding_status = 'accepted'  # Update bidding status to 'accepted'
+            highest_bid.save()  # Save the changes
+            
+            # Display a notification to the owner on the web interface
+            messages.info(request, f"Payment request sent to {highest_bid.student.username} for property '{property.title}'.")
+            
+    # Retrieve all properties for display
+    properties = Property.objects.all()  # Get all properties from the database
+    property_type_form = PropertyTypeForm()  # Create an instance of the PropertyTypeForm
+    
+    # Render the owner dashboard template with properties, property type form, and expired properties
+    return render(request, 'mainapp/owner-dashboard.html', {
+        'properties': properties,  # Pass properties to the template
+        'property_type_form': property_type_form,  # Pass property type form to the template
+        'expired_properties': expired_properties  # Pass expired properties to the template
+    })
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+
+from .forms import ForgetPasswordForm
+
+User = get_user_model()
+
+def forget_password(request):
+    if request.method == 'POST':
+        form = ForgetPasswordForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.filter(username=username).first()
+            if user:
+                user.set_password(new_password)
+                user.save()
+                return redirect('password_reset_done')
+    else:
+        form = ForgetPasswordForm()
+    return render(request, 'webPages/forget.html', {'form': form})
