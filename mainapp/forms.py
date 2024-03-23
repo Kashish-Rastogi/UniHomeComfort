@@ -117,7 +117,6 @@ class PropertyTypeForm(forms.ModelForm):
             'property_type': ''
         }
 
-
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
@@ -130,7 +129,7 @@ class PropertyForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'bidding_end_date': forms.DateInput(attrs={'class': 'common-input w-full'}),
             'address': forms.TextInput(attrs={'class': 'common-input w-full'}),
-            'city': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'city': forms.Select(attrs={'class': 'common-input w-full'}),
             'zipcode': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'property_type': forms.Select(attrs={'class': 'common-input w-full'}),
             'number_of_bedrooms': forms.NumberInput(attrs={'class': 'common-input w-full'}),
@@ -144,14 +143,7 @@ class PropertyForm(forms.ModelForm):
             'lease_duration': forms.NumberInput(attrs={'class': 'common-input'}),
             'allowed_lease_people': forms.NumberInput(attrs={'class': 'common-input'}),
             'rules': forms.Textarea(attrs={'class': 'common-input w-full h-20'}),
-            'prop_image1': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image2': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image3': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image4': forms.FileInput(attrs={'class': 'common-input'}),
-            'prop_image5': forms.FileInput(attrs={'class': 'common-input'}),
         }
-
-
 # ################# Kashish #################
 
 # ################# Parth #################
@@ -183,8 +175,6 @@ class PropertyOwnerRegistrationForm(UserCreationForm):
                                                 'placeholder': 'Last Name'}),
             'email': forms.EmailInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
-            # 'country_code': forms.select(attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true',
-            #                                          'placeholder': 'Country Code'}),
             'country_code': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
             'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
                                                   'placeholder': 'Mobile No.'}),

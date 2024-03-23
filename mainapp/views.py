@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
 from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
@@ -15,7 +18,17 @@ from django.db.models import Max, Count
 
 # ################# Jainam #################
 def loginpage(request):
-    if request.user:
+    if request.user.is_authenticated:
+        visited_properties = request.session.get('visited_properties', [])
+        print(visited_properties)
+        user = AppUser.objects.get(username=request.user.username)
+        existing_history = PropertyVisits.objects.filter(user=user)
+        if existing_history.count() > 0:
+            existing_history = existing_history.first()
+            existing_history.visited_properties = str(visited_properties)
+            existing_history.save()
+        else:
+            PropertyVisits.objects.create(user=user, visited_properties=str(visited_properties))
         logout(request)
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -28,9 +41,17 @@ def loginpage(request):
             else:
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
+                    user_instance = AppUser.objects.get(username=user.username)
+                    user.is_student = user_instance.is_student
+                    user.is_owner = user_instance.is_owner
                     login(request, user)
                     messages.success(request, 'You have been successfully logged in.')
-                    return redirect('owner-view-all-properties')
+                    print(request.user.is_student, request.user.is_owner)
+
+                    property_visits = PropertyVisits.objects.filter(user=user_instance)
+                    if property_visits.count() > 0:
+                        request.session['visited_properties'] = eval(property_visits[0].visited_properties)
+                    return redirect('landing-page')
                 else:
                     messages.error(request, 'Invalid username or password.')
     else:
@@ -254,6 +275,20 @@ def landingpage(request):
 
 
 # ################# Kashish #################
+@login_required(login_url='/login/')
+def user_property_visits(request):
+    visited_properties_ids = request.session.get('visited_properties',[])
+    if len(visited_properties_ids) > 0:
+        visited_properties = Property.objects.filter(id__in=visited_properties_ids)
+        return render(request, 'mainapp/user-property-visits.html', {'properties': visited_properties})
+    elif request.user.is_authenticated:
+        user = AppUser.objects.get(username=request.user.username)
+        user_history = PropertyVisits.objects.filter(user=user)
+        if user_history.count() > 0:
+            visited_properties = Property.objects.filter(id__in = eval(user_history[0].visited_properties))
+        else:
+            visited_properties = []
+        return render(request,'mainapp/user-property-visits.html',{'properties':visited_properties})
 @login_required(login_url='/login/')
 def owner_view_all_properties(request):
     property_type = request.GET.get('property_type', '')
