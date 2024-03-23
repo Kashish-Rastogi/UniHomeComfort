@@ -1,0 +1,126 @@
+{% extends 'mainapp/base.html' %}
+{% block body_block %}
+    <div class="flex h-screen">
+        {# Side bar #}
+        <div class="bg-gray-800 text-white w-64">
+            <div class="p-4">
+                <h1 class="text-2xl flex gap-2 item-center font-bold mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </h1>
+                <ul class="space-y-2">
+                    <li>
+                        <button class="p-2  flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white"
+                                id="myPropertiesBtn">
+                            <span>My Properties</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <ul class="pl-4 mt-2 space-y-2 hidden" id="myPropertiesSubmenu">
+                            <li class="p-2 hover:bg-gray-900 rounded-xl ">
+                                <a href="#" class="text-gray-300 hover:text-white">- All Properties</a>
+                            </li>
+                            <li class="p-2 hover:bg-gray-900 rounded-xl ">
+                                <a href="#" class="text-gray-300 hover:text-white">- Published Properties</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button class="p-2  hover:bg-gray-900 rounded-xl  flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Property Bids</span>
+                        </button>
+
+                    </li>
+                    <li>
+                        <button class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Payments</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Settings</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {## Main content#}
+{#    <div class="container mx-auto py-8">#}
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h1 class="text-3xl font-bold mb-6">Update your profile</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <!-- Personal Information -->
+                <div class="mb-6">
+                    <label for="full_name" class="block text-lg font-semibold mb-2">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" value=""
+                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400"
+                           required>
+                </div>
+                <div class="mb-6">
+                    <label for="email" class="block text-lg font-semibold mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" value=""
+                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400"
+                           required>
+                </div>
+{#                <div class="mb-6">#}
+{#                    <label for="profile_picture" class="block text-lg font-semibold mb-2">Profile Picture</label>#}
+{#                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*"#}
+{#                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400">#}
+{#                </div>#}
+                <!-- Contact Information -->
+                <div class="mb-6">
+                    <label for="phone_number" class="block text-lg font-semibold mb-2">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number" value=""
+                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400">
+                </div>
+                <div class="mb-6">
+                    <label for="address" class="block text-lg font-semibold mb-2">Address</label>
+                    <textarea id="address" name="address"
+                              class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400"
+                              rows="3"></textarea>
+                </div>
+                <!-- Notification Preferences -->
+{#                <div class="mb-6">#}
+{#                    <label class="block text-lg font-semibold mb-2">Notification Preferences</label>#}
+{#                    <div>#}
+{#                        <input type="checkbox" id="email_notifications" name="email_notifications" class="mr-2"#}
+{#                                {% if user.email_notifications %} checked {% endif %}>#}
+{#                        <label for="email_notifications">Receive Email Notifications</label>#}
+{#                    </div>#}
+{#                    <div>#}
+{#                        <input type="checkbox" id="sms_notifications" name="sms_notifications" class="mr-2"#}
+{#                                {% if user.sms_notifications %} checked {% endif %}>#}
+{#                        <label for="sms_notifications">Receive SMS Notifications</label>#}
+{#                    </div>#}
+{#                </div>#}
+                <!-- Password Settings -->
+                <div class="mb-6">
+                    <label for="new_password" class="block text-lg font-semibold mb-2">New Password</label>
+                    <input type="password" id="new_password" name="new_password"
+                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400">
+                </div>
+                <div class="mb-6">
+                    <label for="confirm_password" class="block text-lg font-semibold mb-2">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password"
+                           class="w-full border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-400">
+                </div>
+                <!-- Language and Localization -->
+                <!-- Privacy Settings -->
+                <!-- Account Management -->
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Save
+                    Changes
+                </button>
+            </form>
+        </div>
+{#    </div>#}
+
+{% endblock %}

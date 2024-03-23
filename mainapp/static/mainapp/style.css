@@ -1,5 +1,6 @@
 input{
     display: flex;
+    padding: 10px 20px !important;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     padding-left: 0.75rem;
@@ -18,20 +19,20 @@ input{
     border-radius: 0.25rem;
     padding: 0.5rem 0.5rem;
     transition: border-color 0.2s ease-in-out;
-    margin-top: 0.5rem; /* Add margin-top */
+    margin-top: 0.5rem;
 }
 
 /* Focus state for input fields */
 .common-input:focus {
-    border-color: #667eea; /* Example focus color */
+    border-color: #667eea;
 }
 
 /* Error state for input fields */
 .common-input.error {
-    border-color: #f56565; /* Example error color */
+    border-color: #f56565;
 }
 
 .formlabel {
-    font-size: 1.125rem; /* Equivalent to 18px assuming the default font size is 16px */
-    font-weight: 600; /* This assumes a font-weight of 600 corresponds to "semibold" */
+    font-size: 1.125rem;
+    font-weight: 600;
 }

@@ -18,7 +18,7 @@
                         {{ property_form.availability_status }}
                      </div>
                     <div class="flex flex-1 flex-col">
-                        <label for="{{ property_form.property_type.id_for_label }}" class="formlabel">Property Type</label>
+                        <label for="property_type" class="formlabel">{{ property_form.property_type.id_for_label }}</label>
                             {{ property_form.property_type }}
                     </div>
                 </div>
@@ -108,28 +108,25 @@
 
             <div class="flex flex-wrap mt-12 gap-4 ">
                 <div class="flex flex-col flex-1">
-                    <label for="prop_image1">Property Image-1</label>
+                    <label for="{{ property_form.prop_image1.id_for_label }}">Property Image-1</label>
                     {{ property_form.prop_image1 }}
                 </div>
                 <div class="flex flex-col flex-1">
-                    <label for="prop_image2">Property Image-2</label>
+                    <label for="{{ property_form.prop_image2.id_for_label }}">Property Image-2</label>
                     {{ property_form.prop_image2 }}
                 </div>
-            </div>
-            <div class="flex flex-wrap gap-4 mt-4">
-
                 <div class="flex flex-col flex-1">
-                    <label for="prop_image3">Property Image-3</label>
+                    <label for="{{ property_form.prop_image3.id_for_label }}">Property Image-3</label>
                     {{ property_form.prop_image3 }}
                 </div>
+            </div>
+            <div class="flex flex-wrap mt-4 gap-4 w-2/3">
                 <div class="flex flex-col flex-1">
-                    <label for="prop_image4">Property Image-4</label>
+                    <label for="{{ property_form.prop_image4.id_for_label }}">Property Image-4</label>
                     {{ property_form.prop_image4 }}
                 </div>
-               </div>
-            <div class="flex flex-wrap mt-4 gap-4 w-1/2">
-             <div class="flex flex-col flex-1">
-                    <label for="prop_image5">Property Image-5</label>
+                <div class="flex flex-col flex-1">
+                    <label for="{{ property_form.prop_image5.id_for_label }}">Property Image-5</label>
                     {{ property_form.prop_image5 }}
                 </div>
             </div>
@@ -140,7 +137,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
+{#            href="{% url 'owner-add-property' %}"#}
             <button type="submit"
                class="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700"> Add Property
             </button>
