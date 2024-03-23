@@ -268,4 +268,13 @@ class StudentSettingsForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
             'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
         }
+
+class PropertySearchForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = ['city']
+
+    def __init__(self, *args, **kwargs):
+        super(PropertySearchForm, self).__init__(*args, **kwargs)
+        self.fields['city'].required = False
 # ################# Tanvi #################

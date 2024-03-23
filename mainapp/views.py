@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
@@ -238,14 +239,34 @@ def property_owner_register(request):
     return render(request, 'mainapp/register.html', {'form': form})
 
 def property_listing(request):
-    # Retrieve all properties from the database
-    properties = Property.objects.all()
+    print(request.user)
+    current_user = AppUser.objects.get(username=request.user.username)
+    # current_user = AppUser.obj request.user.appuser
+    selected_types = request.GET.getlist('type', ['all'])  # Default to ['all'] if not provided
+    search_query = request.GET.get('search', '')
+    print('-----------> ', current_user.is_student)
 
-    # Pass the properties to the template context
-    context = {
-        'properties': properties
-    }
-    return render(request, 'mainapp/property_listing.html', context)
+    properties_query = Property.objects.all()
+
+    if current_user.is_owner:
+        properties_query = properties_query.filter()
+    elif current_user.is_student:
+        if current_user.institute and current_user.institute.city:
+            institute_city = current_user.institute.city
+            properties_query = properties_query.filter(city=institute_city)
+
+    # Filter by selected property types, ignore if 'all' is selected
+    if 'all' not in selected_types:
+        properties_query = properties_query.filter(property_type__in=selected_types)
+
+    if search_query:
+        properties_query = properties_query.filter(title__icontains=search_query)
+
+    paginator = Paginator(properties_query, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'mainapp/property_listing.html', {'properties': page_obj, 'selected_types': selected_types})
 
 @login_required
 def student_settings(request):

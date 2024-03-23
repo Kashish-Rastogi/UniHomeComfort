@@ -1,22 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Listing</title>
-</head>
-<body>
-    <h1>Property Listing</h1>
-    <ul>
-        {% for property in properties %}
-            <li>
-                <h2>{{ property.title }}</h2>
-                <p>Address: {{ property.address }}</p>
-                <p>Type: {{ property.get_property_type_display }}</p>
-                <p>Price: ${{ property.price }}</p>
+{% extends 'mainapp/base.html' %}
 
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block body_block %}
+<style>
+    /* Basic styling; adjust or expand as needed */
+    .property-card {
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .property-image {
+        width: 100%;
+        height: 192px;
+        object-fit: cover;
+    }
+
+    .property-info {
+        padding: 16px;
+    }
+
+    .property-info > div {
+        margin-bottom: 8px;
+    }
+
+    .property-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .property-details {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .property-price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+    }
+
+    .filter-buttons {
+
+    }
+
+    .filter-button {
+        padding: 10px;
+        margin-right: 5px;
+        background-color: #4b74a1;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 0.75rem;
+    }
+
+    .filter-button:hover {
+        background-color: #031e3b;
+    }
+
+    /* Active button styling */
+    .active {
+        background-color: #05182d !important;
+    }
+
+    .filter-area {
+        display: none;
+        margin-bottom: 20px;
+    }
+
+    /* Container for filter buttons */
+    .filter-container {
+        {#background-color: #111827; /* Sky blue color */#}
+        {#padding: 10px;#}
+        border-radius: 5px;
+        margin-bottom: 20px;
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar {
+        float: right;
+        margin-bottom: 10px;
+    }
+
+    .search-input {
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="filter-container p-4 px-8">
+    <!-- Filter buttons -->
+    <div class="filter-buttons">
+        <form method="get" action="">
+            <button class="filter-button {% if request.GET.type == 'all' %}active{% endif %}" name="type" value="all" type="submit">All Types</button>
+            <button class="filter-button {% if request.GET.type == 'house' %}active{% endif %}" name="type" value="house" type="submit">House</button>
+            <button class="filter-button {% if request.GET.type == 'condo' %}active{% endif %}" name="type" value="condo" type="submit">Condo</button>
+            <button class="filter-button {% if request.GET.type == 'apartment' %}active{% endif %}" name="type" value="apartment" type="submit">Apartment</button>
+        </form>
+    </div>
+    <div class="flex items-center gap-4">
+{#        <form id="search-form" method="get" action="">#}
+{#            <input class="search-input" type="text" name="search" placeholder="Search by property title" value="{{ request.GET.search }}">#}
+{#        </form>#}
+{#        <button class="filter-button {% if request.GET.type == 'all' %}active{% endif %}" type="button" onclick="searchByTitle()">Search</button>#}
+
+        <form class="flex items-center gap-4 " id="search-form" method="get" action="">
+            <input id="search-input" class="flex-1 rounded-xl bg-gray-100" name="search" placeholder="Search by property title" value="{{ request.GET.search }}"/>
+        </form>
+            <button class="rounded-xl bg-blue-900 text-white hover:bg-blue-800 py-3 px-4 {% if request.GET.type == 'all' %}active{% endif %}" type="button" onclick="searchByTitle()">Search</button>
+    </div>
+</div>
+
+<!-- Search bar -->
+
+<div class="flex flex-wrap px-8 gap-6 ">
+    <!-- Loop through properties to generate property cards -->
+    {% for property in properties %}
+    <a href="{% url 'property_detail' property.id %}" class="w-full md:w-1/4 mb-4 transition ease-in-out hover:shadow-2xl duration-300">
+        <div class="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+            {% if property.prop_image1 %}
+            <img class="object-cover w-full h-48" src="{{ property.prop_image1.url }}" alt="{{ property.title }}">
+            {% endif %}
+            <div class="p-4">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ property.title }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">{{ property.city }}, {{ property.zipcode }}</p>
+                        <p class="text-sm font-normal text-gray-700 dark:text-gray-400">Expires on: {{ property.bidding_end_date }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">Price</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold">Bedrooms</span>
+                        <div class="flex gap-2 items-center">
+                            <i class="fa-solid fa-bed"></i>
+                            <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold">Bathrooms</span>
+                        <div class="flex gap-2 items-center">
+                            <i class="fa-solid fa-shower"></i>
+                            <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<script>
+    function searchByTitle() {
+        var searchInput = document.querySelector('#search-input').value;
+        window.location.href = '/property_listing/?search=' + searchInput;
+    }
+</script>
+
+    <!-- Pagination controls -->
+<div class="pagination">
+    <span class="step-links">
+        {% if properties.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ properties.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+        </span>
+
+        {% if properties.has_next %}
+            <a href="?page={{ properties.next_page_number }}">next</a>
+            <a href="?page={{ properties.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
