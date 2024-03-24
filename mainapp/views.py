@@ -1,24 +1,45 @@
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, JsonResponse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.views.decorators.http import require_POST
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType
+from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm,OwnerSettings
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, GroupChat, Message
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import PropertyOwnerRegistrationForm
 from .models import Property
 from django.db.models import Max
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Max, Count
+<<<<<<< HEAD
 from datetime import timezone
 
 
 
+=======
+>>>>>>> fe365b6db74c95a36d358c9286706a2eaa388b2b
 # ################# Jainam #################
 def loginpage(request):
-    if request.user:
+    if request.user.is_authenticated:
+        visited_properties = request.session.get('visited_properties', [])
+        print(visited_properties)
+        user = AppUser.objects.get(username=request.user.username)
+        existing_history = PropertyVisits.objects.filter(user=user)
+        if existing_history.count() > 0:
+            existing_history = existing_history.first()
+            existing_history.visited_properties = str(visited_properties)
+            existing_history.save()
+        else:
+            PropertyVisits.objects.create(user=user, visited_properties=str(visited_properties))
         logout(request)
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -31,23 +52,34 @@ def loginpage(request):
             else:
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
+                    user_instance = AppUser.objects.get(username=user.username)
+                    user.is_student = user_instance.is_student
+                    user.is_owner = user_instance.is_owner
                     login(request, user)
                     messages.success(request, 'You have been successfully logged in.')
-                    return redirect('owner-view-all-properties')
+                    if user_instance.is_student:
+                        request.session['user_type'] = 'student'
+                    elif user_instance.is_owner:
+                        request.session['user_type'] = 'owner'
+                    property_visits = PropertyVisits.objects.filter(user=user_instance)
+                    if property_visits.count() > 0:
+                        request.session['visited_properties'] = eval(property_visits[0].visited_properties)
+                    return redirect('landing-page')
                 else:
                     messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
     return render(request, 'mainapp/login.html', {'form': form})
 
-
 def register_student_user(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # login(request, user)
-            messages.success(request, 'Registration successful. You are now logged in.')
+            user = form.save(commit=False)
+            user.is_owner = False
+            user.is_student = True
+            user.save()
+            messages.success(request, 'Registration successful. Try to login into your own account.')
             return redirect('login-page')
         else:
             for field, errors in form.errors.items():
@@ -56,6 +88,7 @@ def register_student_user(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'mainapp/register-student-user.html', {'form': form})
+
 
 
 @login_required(login_url='/login/')
@@ -141,22 +174,57 @@ def studentallproperties(request):
     return render(request, 'mainapp/student-all-properties.html')
 
 
+@login_required(login_url='/login/')
+def view_chat(request, post_id=None):
+    posts = CommunityPost.objects.all().order_by('-created_at')
+    post = None
+    chat = None
+    messages = None
+    if post_id:
+        post = get_object_or_404(CommunityPost, pk=post_id)
+        chat, created = GroupChat.objects.get_or_create(post=post)
+        messages = chat.messages.all().order_by('timestamp')
+
+        if request.method == 'POST':
+            content = request.POST.get('message')
+            if content:
+                Message.objects.create(chat=chat, author=request.user, content=content)
+                return redirect('view_chat', post_id=post_id)
+
+    context = {
+        'posts': posts,
+        'post': post,
+        'chat': chat,
+        'messages': messages,
+        'user_can_post': request.user.is_authenticated,
+    }
+
+    return render(request, 'mainapp/view_chat.html', context)
+
+@login_required(login_url='/login/')
+@require_POST
+def send_message(request):
+    chat_id = request.POST.get('chat_id')
+    content = request.POST.get('message')
+    print(chat_id,content)
+    if content:
+        chat = get_object_or_404(GroupChat, pk=chat_id)
+        user = AppUser.objects.get(username=request.user.username)
+        message = Message.objects.create(chat=chat, author=user, content=content)
+
+        return JsonResponse({
+            'author': message.author.username,
+            'content': message.content,
+            'timestamp': message.timestamp.strftime('%H:%M'),
+            'status': 'success'
+        })
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+
 # ################# Jainam #################
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from .forms import CommunityPostForm, ContactForm, PropertyForm, PropertyTypeForm, BidForm, CustomUserCreationForm, LoginForm, StudentSettingsForm
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .forms import PropertyOwnerRegistrationForm
-from .models import Property
-from django.db.models import Max
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib import messages
-from django.db.models import Max, Count
+
 
 # ################# Tanvi #################
 def property_owner_register(request):
@@ -178,14 +246,34 @@ def property_owner_register(request):
     return render(request, 'mainapp/register.html', {'form': form})
 
 def property_listing(request):
-    # Retrieve all properties from the database
-    properties = Property.objects.all()
+    print(request.user)
+    current_user = AppUser.objects.get(username=request.user.username)
+    # current_user = AppUser.obj request.user.appuser
+    selected_types = request.GET.getlist('type', ['all'])  # Default to ['all'] if not provided
+    search_query = request.GET.get('search', '')
+    print('-----------> ', current_user.is_student)
 
-    # Pass the properties to the template context
-    context = {
-        'properties': properties
-    }
-    return render(request, 'mainapp/property_listing.html', context)
+    properties_query = Property.objects.all()
+
+    if current_user.is_owner:
+        properties_query = properties_query.filter()
+    elif current_user.is_student:
+        if current_user.institute and current_user.institute.city:
+            institute_city = current_user.institute.city
+            properties_query = properties_query.filter(city=institute_city)
+
+    # Filter by selected property types, ignore if 'all' is selected
+    if 'all' not in selected_types:
+        properties_query = properties_query.filter(property_type__in=selected_types)
+
+    if search_query:
+        properties_query = properties_query.filter(title__icontains=search_query)
+
+    paginator = Paginator(properties_query, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'mainapp/property_listing.html', {'properties': page_obj, 'selected_types': selected_types})
 
 @login_required
 def student_settings(request):
@@ -257,6 +345,20 @@ def landingpage(request):
 
 
 # ################# Kashish #################
+@login_required(login_url='/login/')
+def user_property_visits(request):
+    visited_properties_ids = request.session.get('visited_properties',[])
+    if len(visited_properties_ids) > 0:
+        visited_properties = Property.objects.filter(id__in=visited_properties_ids)
+        return render(request, 'mainapp/user-property-visits.html', {'properties': visited_properties})
+    elif request.user.is_authenticated:
+        user = AppUser.objects.get(username=request.user.username)
+        user_history = PropertyVisits.objects.filter(user=user)
+        if user_history.count() > 0:
+            visited_properties = Property.objects.filter(id__in = eval(user_history[0].visited_properties))
+        else:
+            visited_properties = []
+        return render(request,'mainapp/user-property-visits.html',{'properties':visited_properties})
 @login_required(login_url='/login/')
 def owner_view_all_properties(request):
     property_type = request.GET.get('property_type', '')
@@ -392,8 +494,27 @@ def bidding(request, property_id):
 def aboutus(request):
     return render(request, 'mainapp/aboutus.html')
 
-def settings_user(request):
-    return render(request, 'mainapp/settings_user.html')
+@login_required
+def owner_settings(request):
+    user = AppUser.objects.get(username=request.user.username)
+    if request.method == 'POST':
+        user_form = OwnerSettings(request.POST, instance=user)
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if user_form.is_valid(): #and (not password_form.is_bound or password_form.is_valid()):
+            user_form.save()
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)  # Important for keeping the user logged in
+                messages.success(request, 'Password has been updated.')
+            messages.success(request, 'Your settings have been updated.')
+            return redirect('owner_settings')
+    else:
+        user_form = OwnerSettings(instance=user)
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'mainapp/owner_settings.html', {
+        'form': user_form,
+        'password_form': password_form
+    })
 
 # ################# Parth #################
 
@@ -417,6 +538,7 @@ def create_community_post(request):
 
 def community_posts_list(request):
     category_id = request.GET.get('category_id', '')
+    search_post = request.GET.get('search_post', '')
     categories = Category.objects.all()  # Fetch all categories from database
     form = CommunityPostForm()  # Initialize the form
 
@@ -425,10 +547,13 @@ def community_posts_list(request):
     else:
         posts = CommunityPost.objects.all().order_by('-created_at')
 
+    if search_post:
+        posts = posts.filter(title__icontains=search_post)
     return render(request, 'mainapp/community-post-list.html', {
         'posts': posts,
         'categories': categories,
-        'selected_category_id': category_id
+        'selected_category_id': category_id,
+        'search_post':search_post
     })
 
 
@@ -481,6 +606,17 @@ def delete_community_post(request, pk):
         return HttpResponseForbidden()
     post.delete()
     return redirect('community_posts_list')
+
+#@login_required
+def view_my_posts(request):
+    categories = Category.objects.all()
+    posts = CommunityPost.objects.filter(author=request.user).order_by('-created_at')
+
+    return render(request, 'mainapp/my-community-posts.html', {
+        'posts': posts,
+        'categories': categories
+    })
+
 # ################# Hetansh #################
 
 

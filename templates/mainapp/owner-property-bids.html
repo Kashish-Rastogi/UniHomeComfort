@@ -132,32 +132,14 @@
                 <td class="text-center">
                     {% if bid.payment_status == "pending" %}
                       <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
-                    {% elif bid.payment_status == "accepted" %}
-                        <button class="bg-orange-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
-                    {% elif bid.payment_status == "accepted" %}
-                      <button class="bg-orange-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
+                    {% elif bid.payment_status == "paid" %}
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
+                    {% elif bid.payment_status == "failed" %}
+                      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
                     {% endif %}
                 </td>
                 <td class="text-center" >${{ bid.bidding_amount }}</td>
 
-{#                <td class="text-center" style="width: 20%;">#}
-{#                    <!--#}
-{#                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">Draft</button>#}
-{#                        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-1">Featured</button>#}
-{#                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">Expired</button>#}
-{#                     -->#}
-{#                    <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">Waiting For Approval</button>#}
-{#                </td>#}
-{#                 <td class="text-center">#}
-{#                     <a class="mr-3"#}
-{#                             href="{% url 'owner-edit-property' pro.id %}">#}
-{#                         <i class="fas fa-edit"></i>#}
-{#                     </a>#}
-{#                     <a href="{% url 'owner-delete-property' pro.id %}">#}
-{#                         <i class="fa-solid fa-trash"></i>#}
-{#                     </a>#}
-{##}
-{#                 </td>#}
             </tr>
         {% endfor %}
         </tbody>

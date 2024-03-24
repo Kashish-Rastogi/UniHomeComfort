@@ -31,8 +31,7 @@ class CustomUserCreationForm(UserCreationForm):
                                                 'placeholder': 'Last name'}),
             'email': forms.EmailInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
-            'country_code': forms.NumberInput(
-                attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true', 'placeholder': '1'}),
+            'country_code': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
             'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
                                                   'placeholder': 'Mobile no.'}),
             'age': forms.NumberInput(
@@ -47,7 +46,6 @@ class CustomUserCreationForm(UserCreationForm):
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Zip code'}),
             'gender': forms.RadioSelect(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'},
                                         choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]),
-            'offer_letter': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'}),
             'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
             'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
         }
@@ -59,6 +57,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password2'].widget = forms.PasswordInput(
             attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
                    'placeholder': 'Confirm Password'})
+
 
 
 # ################# Jainam #################
@@ -117,7 +116,6 @@ class PropertyTypeForm(forms.ModelForm):
             'property_type': ''
         }
 
-
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
@@ -130,7 +128,7 @@ class PropertyForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'bidding_end_date': forms.DateInput(attrs={'class': 'common-input w-full'}),
             'address': forms.TextInput(attrs={'class': 'common-input w-full'}),
-            'city': forms.TextInput(attrs={'class': 'common-input w-full'}),
+            'city': forms.Select(attrs={'class': 'common-input w-full'}),
             'zipcode': forms.TextInput(attrs={'class': 'common-input w-full'}),
             'property_type': forms.Select(attrs={'class': 'common-input w-full'}),
             'number_of_bedrooms': forms.NumberInput(attrs={'class': 'common-input w-full'}),
@@ -144,13 +142,7 @@ class PropertyForm(forms.ModelForm):
             'lease_duration': forms.NumberInput(attrs={'class': 'common-input'}),
             'allowed_lease_people': forms.NumberInput(attrs={'class': 'common-input'}),
             'rules': forms.Textarea(attrs={'class': 'common-input w-full h-20'}),
-            'prop_image1': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image2': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image3': forms.FileInput(attrs={'class': 'common-input w-full '}),
-            'prop_image4': forms.FileInput(attrs={'class': 'common-input'}),
-            'prop_image5': forms.FileInput(attrs={'class': 'common-input'}),
         }
-
 
 # ################# Kashish #################
 
@@ -160,6 +152,40 @@ class BidForm(forms.ModelForm):
         model = Bidding
         fields = ['bidding_amount']
 
+class OwnerSettings(forms.ModelForm):
+    class Meta:
+        model = AppUser
+        fields = ['first_name','last_name','email','country_code', 'mobile_no', 'age', 'address', 'state',
+                  'city', 'zip_code', 'gender', 'country', 'occupation','proofidentity', 'identification', 'rental_license']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                 'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                'placeholder': 'Last name'}),
+            'email': forms.EmailInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
+            'country_code': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true', 'placeholder': '1'}),
+            'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
+                                                  'placeholder': 'Mobile no.'}),
+            'age': forms.NumberInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Age'}),
+            'address': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Address'}),
+            'state': forms.Select(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'State'}),
+            'city': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'City'}),
+            'zip_code': forms.TextInput(
+                attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true', 'placeholder': 'Zip code'}),
+            'gender': forms.RadioSelect(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex gap-2 flex-1'},
+                                        choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]),
+            'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'occupation': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'proofidentity': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
+            'identification': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'rental_license': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+        }
 
 # ################# Parth #################
 
@@ -183,23 +209,21 @@ class PropertyOwnerRegistrationForm(UserCreationForm):
                                                 'placeholder': 'Last Name'}),
             'email': forms.EmailInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Email'}),
-            # 'country_code': forms.select(attrs={'class': 'border-2 py-2 px-3 rounded-xl w-16', 'required': 'true',
-            #                                          'placeholder': 'Country Code'}),
-            'country_code': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
+            'country_code': forms.Select(attrs={'class': 'border-2 py-3 px-4 rounded-xl'}),
             'mobile_no': forms.NumberInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl flex-1', 'required': 'true',
                                                   'placeholder': 'Mobile No.'}),
             'age': forms.NumberInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Age'}),
-            'gender': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'gender': forms.Select(attrs={'class': 'border-2 py-3 px-3 rounded-xl'}),
             'address': forms.TextInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Address'}),
-            'state': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
+            'state': forms.Select(attrs={'class': 'border-2 py-3 px-3 rounded-xl'}),
             'city': forms.TextInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'City'}),
             'zip_code': forms.TextInput(
                 attrs={'class': 'border-2 py-2 px-3 rounded-xl', 'required': 'true', 'placeholder': 'Zip Code'}),
-            'occupation': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
-            'proofidentity': forms.Select(attrs={'class': 'border-2 py-2 px-4 rounded-xl'}),
+            'occupation': forms.Select(attrs={'class': 'border-2 py-3 px-3 rounded-xl'}),
+            'proofidentity': forms.Select(attrs={'class': 'border-2 py-3 px-4 rounded-xl'}),
             'identification': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
             'rental_license': forms.FileInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
         }
@@ -244,6 +268,15 @@ class StudentSettingsForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
             'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
         }
+
+class PropertySearchForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = ['city']
+
+    def __init__(self, *args, **kwargs):
+        super(PropertySearchForm, self).__init__(*args, **kwargs)
+        self.fields['city'].required = False
 # ################# Tanvi #################
 
 

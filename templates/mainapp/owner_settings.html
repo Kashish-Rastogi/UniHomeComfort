@@ -1,0 +1,145 @@
+{% extends 'mainapp/base.html' %}
+
+{% block body_block %}
+    <div class="min-h-screen bg-gray-100 flex">
+        <div class="w-64 bg-gray-800 text-white">
+            <div class="p-5">
+                <h1 class="text-xl font-bold mb-4">Dashboard</h1>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">My
+                        Properties</a></li>
+                    <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">Property
+                        Bids</a></li>
+                    <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">Payments</a>
+                    </li>
+                    <li><a href="{% url 'student_settings' %}" class="block p-2 hover:bg-gray-700 rounded">Settings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="flex flex-1 justify-center items-center py-10 bg-gray-100">
+            <div class="flex flex-col h-full p-10 w-2/3 shadow-xl rounded-2xl bg-white">
+                <form class="bg-white flex flex-col py-5 flex-1" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h1 class="text-gray-800 font-bold text-3xl mb-2 -mt-12">Settings</h1>
+                    <div class="flex gap-4">
+                        <div class="flex flex-1 flex-col">
+                            <label for="first_name">{{ form.first_name.label_tag }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="flex flex-1 flex-col">
+                            <label for="last_name">{{ form.last_name.label_tag }}</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <div class="flex flex-1 flex-col mt-4">
+                        <label for="email">{{ form.email.label_tag }}</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <div class="gap-2 flex w-1/2">
+                            <div class="flex flex-col">
+                                <label for="country_code">Code:</label>
+                                {{ form.country_code }}
+                            </div>
+                            <div class="flex flex-1 flex-col">
+                                <label for="mobile_no">{{ form.mobile_no.label_tag }}</label>
+                                {{ form.mobile_no }}
+                            </div>
+                        </div>
+                        <div class="flex flex-1 flex-col">
+                            <label for="age">{{ form.age.label_tag }}</label>
+                            {{ form.age }}
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex flex-col mt-4 w-3/4">
+                            <label for="address">{{ form.address.label_tag }}</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="flex flex-col mt-4">
+                            <label for="city">{{ form.city.label_tag }}</label>
+                            {{ form.city }}
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex flex-1 flex-col mt-4">
+                            <label for="state">{{ form.state.label_tag }}</label>
+                            {{ form.state }}
+                        </div>
+                        <div class="flex flex-1 flex-col mt-4">
+                            <label for="country">{{ form.country.label_tag }}</label>
+                            {{ form.country }}
+                        </div>
+                        <div class="flex flex-col mt-4">
+                            <label for="zip_code">{{ form.zip_code.label_tag }}</label>
+                            {{ form.zip_code }}
+                        </div>
+                    </div>
+                    <div class="flex flex-1 flex-col mt-4">
+                        <label for="gender">{{ form.gender.label_tag }}</label>
+                        {{ form.gender }}
+                    </div>
+                    <div class="flex flex-1 flex-col mt-4">
+                        <label for="offer_letter">{{ form.offer_letter.label_tag }}</label>
+                        {{ form.offer_letter }}
+                    </div>
+                    {#                    <div class="flex flex-1 flex-col mt-4">#}
+                    {#                        <label for="institute">{{ form.institute.label_tag }}</label>#}
+                    {#                        {{ form.institute }}#}
+                    {#                    </div>#}
+                    <div class="flex gap-4 mt-4">
+                        <div class="flex flex-1 flex-col">
+                            <label for="{{ form.identification.id_for_label }}">{{ form.identification.label_tag }}</label>
+                            {{ form.identification }}
+                        </div>
+                        <div class="flex flex-1 flex-col">
+                            <label for="{{ form.proofidentity.id_for_label }}">{{ form.proofidentity.label_tag }}</label>
+                            {{ form.proofidentity }}
+                        </div>
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <div class="flex flex-1 flex-col">
+                            <label for="{{ form.rental_license.id_for_label }}">{{ form.rental_license.label_tag }}</label>
+                            {{ form.rental_license }}
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-xl font-semibold mb-2">Change Password</h3>
+                        {{ password_form.non_field_errors }}
+                        {#                    <div class="mb-4">#}
+                        <div class="flex flex-1 flex-col mt-4 mb-4">
+                            <label for="old_password">{{ password_form.old_password.label }}</label>
+                            {{ password_form.old_password }}
+                            {{ password_form.old_password.errors }}
+                        </div>
+                        {#                    <div class="mb-4">#}
+                        <div class="flex flex-1 flex-col mt-4 mb-4">
+                            <label for="new_password1">{{ password_form.new_password1.label }}</label>
+                            {{ password_form.new_password1 }}
+                            {{ password_form.new_password1.errors }}
+                        </div>
+                        {#                    <div class="mb-4">#}
+                        <div class="flex flex-1 flex-col mt-4 mb-4">
+                            <label for="new_password2">{{ password_form.new_password2.label }}</label>
+                            {{ password_form.new_password2 }}
+                            {{ password_form.new_password2.errors }}
+                        </div>
+                    </div>
+                    <button type="submit"
+                            class="block w-full mt-4 py-2 rounded-2xl text-white font-semibold mb-2 bg-gray-600 hover:bg-gray-800">
+                        Update Settings
+                    </button>
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

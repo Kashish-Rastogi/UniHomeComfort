@@ -5,6 +5,17 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django import forms
 
+from UniHomeComfort import settings
+
+class City(models.Model):
+    city = models.TextField()
+
+    class Meta:
+        ordering = ['city']
+
+    def __str__(self):
+        return self.city
+
 
 # Kashish
 class Institute(models.Model):
@@ -33,13 +44,14 @@ class Institute(models.Model):
     name = models.TextField()
     type = models.IntegerField(default=0, choices=INSTITUTE_TYPE)
     address = models.TextField()
-    city = models.TextField(default="Windsor")
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='insitute_city_name')
     state = models.CharField(max_length=130, choices=STATE, default='ON')
     zip_code = models.TextField(default="N9B 2T6")
     country = models.TextField(null=True, blank=True, default='Canada')
 
     def __str__(self):
         return self.name
+
 
 # Kashish
 class AppUser(User):
@@ -61,7 +73,7 @@ class AppUser(User):
         ('SK', 'Saskatchewan'),
         ('YT', 'Yukon'),
     ]
-    GENDER=[('Male', 'Male'),('Female', 'Female'),('Other','Other')]
+    GENDER = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     user_ptr = models.OneToOneField(
         'auth.User',
         on_delete=models.CASCADE,
@@ -79,7 +91,7 @@ class AppUser(User):
     age = models.IntegerField()
     address = models.CharField(max_length=150)
     state = models.CharField(max_length=130, choices=STATE, default='AB')
-    city = models.CharField(max_length=150)
+    city = models.TextField()
     zip_code = models.CharField(max_length=7)
     created_at = models.DateTimeField(default=timezone.now)
     gender = models.CharField(max_length=7, choices=GENDER, default='Female')
@@ -102,6 +114,7 @@ class AppUser(User):
     proofidentity = models.IntegerField(default=0, choices=IDENTIFICATION_TYPES, null=True, blank=True)
     is_student = models.BooleanField(default=True)
     is_owner = models.BooleanField(default=False)
+
     def __str__(self):
         return str(self.first_name)
 
@@ -128,7 +141,7 @@ class Property(models.Model):
 
     title = models.CharField(max_length=255)
     address = models.TextField()
-    city = models.TextField(max_length=50, default='Windsor')
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='city_name')
     zipcode = models.TextField(max_length=50, default='N9B 2T6')
 
     property_type = models.CharField(max_length=50, choices=PROPERTY_TYPES)
@@ -203,6 +216,7 @@ class Forum(models.Model):
     def __str__(self):
         return self.title
 
+
 class PropertyDocument(models.Model):
     DOCUMENT_TYPES = (
         ('title_deed', 'Title Deed'),
@@ -221,8 +235,6 @@ class PropertyDocument(models.Model):
 
     def __str__(self):
         return f"{self.get_document_type_display()} for {self.property.id}"
-
-
 
 
 class Category(models.Model):
@@ -245,4 +257,19 @@ class CommunityPost(models.Model):
         return self.title
 
 
+class PropertyVisits(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='user')
+    visited_properties = models.TextField()
 
+    def __str__(self):
+        return self.user.username
+
+class GroupChat(models.Model):
+    post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='chats')
+
+
+class Message(models.Model):
+    chat = models.ForeignKey(GroupChat, on_delete=models.CASCADE, related_name='messages')
+    author = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)

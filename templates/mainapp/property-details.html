@@ -74,7 +74,8 @@
     }
 
     body {
-        background-color: #f3f4f6;
+        background-color: #f0f3f8
+                {##f3f4f6;#}
     }
     .modal {
         display: none;
@@ -202,7 +203,7 @@
 
     {# Image Section #}
     <div>
-        <h1 class="text-2xl font-bold mt-6">Images</h1>
+        <h1 class="text-2xl font-bold mt-6">Property Images</h1>
         <div id="slider" class="slider">
             <div class="slides">
                 {% if property.prop_image1 %}
@@ -230,21 +231,31 @@
      <div id="myModal" class="modal">
         <span class="close cursor" onclick="closeModal()">&times;</span>
         <div class="modal-content">
+            {% if property.prop_image1 %}
             <div class="mySlides">
                 <img src="{{ property.prop_image1.url }}" style="width:100%">
             </div>
+            {% endif %}
+            {% if property.prop_image2 %}
             <div class="mySlides">
                 <img src="{{ property.prop_image2.url }}" style="width:100%">
             </div>
+            {% endif %}
+            {% if property.prop_image3 %}
             <div class="mySlides">
                 <img src="{{ property.prop_image3.url }}" style="width:100%">
             </div>
+            {% endif %}
+            {% if property.prop_image4 %}
             <div class="mySlides">
                 <img src="{{ property.prop_image4.url }}" style="width:100%">
             </div>
+            {% endif %}
+            {% if property.prop_image5 %}
             <div class="mySlides">
                 <img src="{{ property.prop_image5.url }}" style="width:100%">
             </div>
+            {% endif %}
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
             <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
@@ -256,18 +267,41 @@
     {# Description + Price Section #}
     <div class="flex flex-row gap-8 mt-16">
         <div class="bg-white shadow-md rounded-lg p-8 w-3/4">
-            <div class="flex items-center">
-                <img src="your-image-url.jpg" alt="User Image" class="w-16 h-16 rounded-full mr-4">
-                <div>
-                    <h2 class="text-2xl font-medium text-gray-800">{{ property.title }}</h2>
-                    <p class="text-gray-600">{{ property.address }}</p>
+            <div class="w-full flex justify-between items-center">
+                <div class="w-full flex items-center justify-between">
+                    <div class="flex flex-col flex-1 w-full">
+                        <h2 class="text-2xl font-medium text-gray-800">{{ property.title }}</h2>
+                        <p class="flex-1 text-gray-600">{{ property.address }}</p>
+                    </div>
+                </div>
+                 <div class="text-center">
+                    {% if property.availability_status == "available" %}
+                      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ property.availability_status|upper }}</button>
+                    {% elif property.availability_status == "not_available" %}
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ property.availability_status|upper }}</button>
+                    {% elif property.availability_status == "coming_soon" %}
+                      <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">{{ property.availability_status|upper }}</button>
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="flex -mt-3 text-xl p-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 -ml-4">
+                    <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                        <p class="text-2xl text-center text-gray-500">{{ property.allowed_lease_people }}</p>
+                        <h4 class="text-md font-medium text-gray-900 -mt-1">People Allowed</h4>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <p class="text-2xl text-center text-gray-500">{{ property.number_of_bedrooms }}</p>
+                    <h4 class="text-md font-medium text-center text-gray-900 -mt-1">Bathrooms</h4>
+                </div>
+                <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
+                    <p class="text-2xl text-center text-gray-500">{{ property.number_of_bathrooms}}</p>
+                    <h4 class="text-md font-medium text-center text-gray-900 -mt-1">Bedrooms</h4>
+                </div>
                 </div>
             </div>
-            <div class="flex flex-row mt-4 gap-4 w-2/3 ml-20">
-                <p class="flex-1 text-gray-600">{{ property.square_footage }} sqft,</p>
-                <p class="flex-1 text-gray-600">{{ property.number_of_bedrooms }} Beds,</p>
-                <p class="flex-1 text-gray-600">{{ property.number_of_bathrooms }} Baths</p>
-            </div>
+
             <div>
                 <h3 class="font-bold mt-8">Description</h3>
                 <p class="flex-1 text-gray-600">{{ property.description }}</p>
@@ -277,10 +311,10 @@
                 <p class="flex-1 text-gray-600">{{ property.rules|linebreaks }}</p>
             </div>
 
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 -ml-4">Informations</h3>
+            <div class="mt-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Informations</h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 -ml-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
                         <h4 class="text-sm font-medium text-gray-900">Property Type</h4>
                         <p class="text-sm text-gray-500">{{ property.get_property_type_display }}</p>
@@ -288,10 +322,6 @@
                     <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
                         <h4 class="text-sm font-medium text-gray-900">Lease Duration (Months)</h4>
                         <p class="text-sm text-gray-500">{{ property.lease_duration }}</p>
-                    </div>
-                    <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
-                        <h4 class="text-sm font-medium text-gray-900">Allowed Lease People</h4>
-                        <p class="text-sm text-gray-500">{{ property.allowed_lease_people }}</p>
                     </div>
                     <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
                         <h4 class="text-sm font-medium text-gray-900">Is Biddable?</h4>
@@ -308,10 +338,10 @@
                 </div>
             </div>
 
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 -ml-4">Amenities</h3>
+            <div class="mt-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Amenities</h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 -ml-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     <div class="px-6 py-4 bg-white shadow-sm rounded-lg">
                         <h4 class="text-sm font-medium text-gray-900">Hydro</h4>
                         <p class="text-sm text-gray-500">{{ property.amenities|linebreaks }}</p>
@@ -320,48 +350,29 @@
             </div>
 
             <div class="mt-8">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    More Info
-                </button>
+                {% if property.availability_status == "available" %}
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Make a Bid
+                    </button>
+                {% endif %}
             </div>
         </div>
         <div class="bg-white shadow-md rounded-lg p-6 h-96 w-1/4 self-start">
-            <h3 class="font-bold text-2xl">Price</h3>
-            <div class="flex">
-                <h2>${{ property.price }}</h2>
+            <div class="flex items-center justify-between">
+                <h3 class="flex font-bold text-2xl">Price</h3>
+                <div class="flex text-xl">
+                    <h2>${{ property.price }}</h2>
+                </div>
             </div>
-            <div class="flex">
-                <p>Days on Hously</p>
-                <p>124 Days</p>
+            <div class="flex items-center justify-between">
+                <p class="flex">Monthly Payment (+1 month)</p>
+                <p class="flex">${{ property.price | add:property.price}}</p>
             </div>
-            <div class="flex">
-                <p>Price per sq ft</p>
-                <p>$ 186</p>
-            </div>
-            <div class="flex">
-                <p>Monthly Payment (estimate)</p>
-                <p>$ 1497/Monthly</p>
-            </div>
+
+
         </div>
     </div>
 
-    <div class="mt-8 px-4 py-5 sm:px-6 bg-white shadow-md rounded-lg">
-        <h4 class="text-2xl leading-6 font-medium text-gray-900 mb-2">Location</h4>
-        <div id="map" style="height: 300px;">
-            <!-- Map initialization script goes here -->
-        </div>
-        <p class="mt-2 text-sm text-gray-500">
-            <!-- Property location description -->
-        </p>
-    </div>
-
-    <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
-        <div class="mt-8 text-center">
-            <a href="#" class="button-schedule-viewing">
-                Request to book
-            </a>
-        </div>
-    </div>
 </div>
 <script>
     var slideIndex = 1;

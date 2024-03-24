@@ -1,5 +1,10 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType, CommunityPost
+=======
+from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType, \
+    CommunityPost, PropertyVisits, City
+>>>>>>> fe365b6db74c95a36d358c9286706a2eaa388b2b
 
 
 def user_type(obj):
@@ -27,3 +32,8 @@ admin.site.register(Forum)
 admin.site.register(PropertyDocument)
 admin.site.register(Category)
 admin.site.register(CommunityPost)
+<<<<<<< HEAD
+=======
+admin.site.register(PropertyVisits)
+admin.site.register(City)
+>>>>>>> fe365b6db74c95a36d358c9286706a2eaa388b2b
