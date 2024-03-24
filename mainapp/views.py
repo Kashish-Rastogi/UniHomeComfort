@@ -703,12 +703,14 @@ def forget_password(request):
             new_password = form.cleaned_data['new_password']
             user = User.objects.filter(username=username).first()
             if user:
-                user.set_password(new_password)
-                user.save()
-                return redirect('password_reset_done')
+                # Check if the entered username matches the user's username
+                if user.username == username:
+                    # Update the user's password
+                    user.set_password(new_password)
+                    user.save()
+                    return render(request, 'webPages/success.html') # Redirect to success page
     else:
         form = ForgetPasswordForm()
     return render(request, 'webPages/forget.html', {'form': form})
-
 
 
