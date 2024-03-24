@@ -245,3 +245,36 @@ class StudentSettingsForm(forms.ModelForm):
             'institute': forms.Select(attrs={'class': 'border-2 py-2 px-3 rounded-xl'}),
         }
 # ################# Tanvi #################
+
+
+
+
+
+##################### Haseeb #################
+        
+
+# Creating a form for handling password reset
+class ForgetPasswordForm(forms.Form):
+    # Defining form fields
+    username = forms.CharField(label='Username', max_length=150, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    new_password = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}))
+    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}))
+
+    # Method to clean and validate form data
+    def clean(self):
+        # Call the parent class' clean method to ensure all validations are performed
+        cleaned_data = super().clean()
+        # Retrieve cleaned data for new password and confirm password fields
+        new_password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+        # Check if both passwords are provided and match
+        if new_password and confirm_password and new_password != confirm_password:
+            # Raise a validation error if passwords don't match
+            raise forms.ValidationError("New passwords do not match")
+        # Return the cleaned data
+        return cleaned_data
+
+
+
+
+################# Haseeb #############################

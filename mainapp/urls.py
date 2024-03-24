@@ -1,4 +1,6 @@
 from django.urls import path
+from .import views
+
 from .views import (landingpage, loginpage, community_posts_list, update_community_post,
                     delete_community_post, property_detail, viewbiddedproperties, studentallproperties,
                     bidding, property_listing, register_student_user, owner_view_all_properties,
@@ -45,4 +47,14 @@ urlpatterns = [
     path('community/delete/<int:pk>/', delete_community_post, name='delete_community_post'),
     path('property_detail/', property_detail, name='property_detail'),
 # ################# Hetansh #################
+
+
+
+
+###################### Haseeb ##################
+    path('forget/', views.forget_password, name='forget'),
+
+###################### Haseeb ##################
 ]
+
+
