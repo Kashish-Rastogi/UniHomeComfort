@@ -31,7 +31,7 @@ urlpatterns = [
 
 # ################# Parth #################
     path('bidding/<int:property_id>', bidding, name='bidding'),
-    path('owner_settings/', owner_settings, name='owner_settings'),
+    path('owner-settings/', owner_settings, name='owner_settings'),
     path('aboutus/', aboutus, name='aboutus'),
 # ################# Parth #################
 

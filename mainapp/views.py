@@ -644,10 +644,17 @@ def user_property_visits(request):
 # ################# Kashsih #################
 
 # ################# Parth #################
+@login_required(login_url='/login/')
 def bidding(request, property_id):
+    if request.session['user_type'] == "owner":
+        return redirect('login-page')
     property_data = get_object_or_404(Property, pk=property_id)
-    max_bidding_amount= Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
-        'max_bidding_amount']
+    if property_data.availability_status == "not_available" or property_data.availability_status == "coming_soon":
+        return redirect('mainapp:property_listing')
+    max_bidding_amount = \
+        Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
+            'max_bidding_amount']
+    print(max_bidding_amount)
     if max_bidding_amount is None:
         max_bidding_amount = property_data.bidding_min_limit
 
@@ -661,26 +668,32 @@ def bidding(request, property_id):
             form.payment_status = 'pending'
             student = AppUser.objects.get(username=request.user.username)
             form.student = student
-            # form.bidding_amount = form.cleaned_data['bidding_amount']
+            form.bidding_amount = request.POST['bidding_amount']
             form.save()
+            return redirect('property_listing')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
         form = BidForm(initial={'bidding_amount': max_bidding_amount or 2000})  # Example current bid
-    return render(request, 'mainapp/bidding.html',{'form': form, 'property_data': property_data,'max_bidding_amount': max_bidding_amount})
+    return render(request, 'mainapp/bidding.html',
+                  {'form': form, 'property_data': property_data, 'max_bidding_amount': max_bidding_amount})
+
 
 def aboutus(request):
     return render(request, 'mainapp/aboutus.html')
 
-@login_required
+
+@login_required(login_url='/login/')
 def owner_settings(request):
+    if request.session['user_type'] == "student":
+        return redirect('login-page')
     user = AppUser.objects.get(username=request.user.username)
     if request.method == 'POST':
         user_form = OwnerSettings(request.POST, instance=user)
         password_form = PasswordChangeForm(request.user, request.POST)
-        if user_form.is_valid(): #and (not password_form.is_bound or password_form.is_valid()):
+        if user_form.is_valid():  # and (not password_form.is_bound or password_form.is_valid()):
             user_form.save()
             if password_form.is_valid():
                 password_form.save()
@@ -691,10 +704,11 @@ def owner_settings(request):
     else:
         user_form = OwnerSettings(instance=user)
         password_form = PasswordChangeForm(request.user)
-    return render(request, 'mainapp/owner_settings.html', {
+    return render(request, 'mainapp/owner-settings.html', {
         'form': user_form,
         'password_form': password_form
     })
+
 
 # ################# Parth #################
 
