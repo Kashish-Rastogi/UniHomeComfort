@@ -5,7 +5,8 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_POST
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits, Institute
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits, Institute, \
+    Payment
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
@@ -16,12 +17,11 @@ from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import PropertyOwnerRegistrationForm
 from .models import Property
-from django.db.models import Max
+from django.db.models import Max, F
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Max, Count
-from datetime import timezone
-
+from datetime import timezone, timedelta, date
 
 
 # ################# Jainam #################
@@ -56,8 +56,21 @@ def loginpage(request):
                     messages.success(request, 'You have been successfully logged in.')
                     if user_instance.is_student:
                         request.session['user_type'] = 'student'
+                        pending_payments = Payment.objects.filter(student=user_instance, payment_status='requested')
+                        request.session['notifications'] = [payment.id for payment in pending_payments]
                     elif user_instance.is_owner:
                         request.session['user_type'] = 'owner'
+                        near_expiry_properties = Property.objects.filter(
+                            owner=user_instance,
+                            availability_status="available",
+                            bidding_end_date__lte=date.today()
+                        ).values_list('id', flat=True)
+                        near_expiry_properties_ids=[]
+
+                        for property_id in near_expiry_properties:
+                            near_expiry_properties_ids.append(property_id)
+                        print( near_expiry_properties_ids)
+                        request.session['notifications'] = str(near_expiry_properties_ids)
                     property_visits = PropertyVisits.objects.filter(user=user_instance)
                     if property_visits.count() > 0:
                         request.session['visited_properties'] = eval(property_visits[0].visited_properties)
@@ -67,7 +80,128 @@ def loginpage(request):
     else:
         form = LoginForm()
     return render(request, 'mainapp/login.html', {'form': form})
+def notification_list(request):
+    if request.user.is_authenticated:
+        user_type = request.session['user_type']
+        if user_type == 'student':
+            notifications = request.session.get('notifications', [])
+            payments = Payment.objects.filter(id__in=notifications, student=request.user, payment_status='requested')
+            for payment in payments:
+                payment.pay_before = payment.property.bidding_end_date + timedelta(days=1)
 
+
+            return render(request, 'mainapp/notifications.html', {'payments': payments, 'user_type': user_type})
+        elif user_type == 'owner':
+            if 'notifications' in request.session:
+                notifications = eval(request.session['notifications'])
+            else:
+                notifications = request.session.get('notifications', [])
+            print(notifications)
+            properties = Property.objects.filter(id__in=notifications)
+            bid_amounts = Bidding.objects.filter(property__id__in=notifications, bidding_status="pending").values('property_id').annotate(
+                highest_bid=Max('bidding_amount'), student_name=F('student__username'))
+            print(bid_amounts)
+
+            # Create a dictionary to hold property information with highest bid amount
+            properties_with_bids = []
+            for bid in bid_amounts:
+                for prop in properties:
+                    property_info = {
+                        'property': prop,
+                        'highest_bid': None,  # Initialize highest bid amount
+                        'student_name': None  # Initialize highest bid amount
+                    }
+
+                    if bid['property_id'] == prop.id:
+                        property_info['highest_bid'] = bid['highest_bid']
+                        property_info['student_name'] = bid['student_name']
+                        properties_with_bids.append(property_info)
+                        break
+                print(properties_with_bids)
+            return render(request, 'mainapp/notifications.html',
+                          {'properties': properties_with_bids, 'user_type': user_type})
+    else:
+        return redirect('landing-page')
+
+
+from django.shortcuts import redirect, render
+from django.contrib import messages
+
+def  send_payment_request(request, property_id):
+    if request.method == 'POST':
+        try:
+            property = Property.objects.get(id=property_id)
+            max_bid_info = Bidding.objects.filter(property=property).aggregate(max_bid=Max('bidding_amount'))
+            max_bid = max_bid_info.get('max_bid', 0)
+
+            # Find the bidding object with the highest amount
+            max_bidder_bidding = Bidding.objects.filter(property=property, bidding_amount=max_bid, bidding_status="pending").first()
+
+            # Check if a max bidder exists
+            if max_bidder_bidding:
+                max_bidder = max_bidder_bidding.student
+                payment_amount = max_bid
+
+                # Create payment record
+                payment = Payment.objects.create(
+                    owner=property.owner,
+                    student=max_bidder,
+                    property=property,
+                    payment_amount=payment_amount,
+                    payment_status='requested'
+                )
+
+                # Append this payment ID to student's notifications session
+                # student_notifications = request.session.get('notifications', [])
+                # if not isinstance(student_notifications, list):
+                #     student_notifications = eval(student_notifications)  # Ensuring the session variable is a list
+                # student_notifications.append(payment.id)
+                # request.session['notifications'] = str(student_notifications)
+
+                if 'notifications' in request.session:
+                    notifications = eval(request.session['notifications'])
+                    if property_id in notifications:
+                        notifications.remove(property_id)
+                    print(notifications)
+                    max_bidder_bidding.bidding_status = 'accepted'
+                    max_bidder_bidding.save()
+                    request.session['notifications'] = str(notifications)
+
+
+                messages.success(request, 'Payment request sent successfully.')
+                return redirect('notification-list')
+            else:
+                messages.error(request, 'No maximum bidder found for this property.')
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+
+    return redirect('landing-page')  # Replace 'some-page-if-needed-or-back' with the appropriate page
+
+
+
+def do_payment(request, payment_id):
+    if request.method == 'POST':
+        payment = Payment.objects.get(id=payment_id)
+        max_bid_info = Bidding.objects.filter(property=payment.property).aggregate(max_bid=Max('bidding_amount'))
+        max_bid = max_bid_info.get('max_bid', 0)
+        max_bidder_bidding = Bidding.objects.filter(property=payment.property, bidding_amount=max_bid).first()
+
+        property = payment.property
+
+        # Check if the property is available
+        if property.availability_status == 'available':
+            payment.payment_status = 'accepted'
+            payment.save()
+            property.availability_status = 'not_available'
+            property.save()
+            max_bidder_bidding.payment_status = 'paid'
+            max_bidder_bidding.save()
+        else:
+            # Property is not available, handle the case accordingly
+            # For example, you could display an error message to the user
+            messages.error(request, 'The property is not available for booking.')
+
+        return redirect('notification-list')
 def register_student_user(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

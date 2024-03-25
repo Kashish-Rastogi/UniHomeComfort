@@ -13,7 +13,7 @@ class City(models.Model):
     class Meta:
         ordering = ['city']
 
-    def __str__(self):
+    def _str_(self):
         return self.city
 
 
@@ -49,7 +49,7 @@ class Institute(models.Model):
     zip_code = models.TextField(default="N9B 2T6")
     country = models.TextField(null=True, blank=True, default='Canada')
 
-    def __str__(self):
+    def _str_(self):
         return self.name
 
 
@@ -115,14 +115,14 @@ class AppUser(User):
     is_student = models.BooleanField(default=True)
     is_owner = models.BooleanField(default=False)
 
-    def __str__(self):
+    def _str_(self):
         return str(self.first_name)
 
 
 class PropertyType(models.Model):
     title = models.CharField(max_length=255)
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
 
@@ -168,7 +168,7 @@ class Property(models.Model):
     house_build_date = models.DateField(default=timezone.now)
     bidding_end_date = models.DateField(default=timezone.now)
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
 
@@ -185,7 +185,7 @@ class Bidding(models.Model):
     bidding_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     payment_transaction_id = models.CharField(max_length=255, null=True, blank=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.property.title
 
     # def make_payment(self):
@@ -213,7 +213,7 @@ class Forum(models.Model):
     is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
 
@@ -233,7 +233,7 @@ class PropertyDocument(models.Model):
     upload_date = models.DateField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.get_document_type_display()} for {self.property.id}"
 
 
@@ -241,7 +241,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=False)
 
-    def __str__(self):
+    def _str_(self):
         return self.name
 
 
@@ -253,7 +253,7 @@ class CommunityPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
 
@@ -261,8 +261,9 @@ class PropertyVisits(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='user')
     visited_properties = models.TextField()
 
-    def __str__(self):
+    def _str_(self):
         return self.user.username
+
 
 class GroupChat(models.Model):
     post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='chats')
@@ -273,3 +274,20 @@ class Message(models.Model):
     author = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class Payment(models.Model):
+    owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='owner_payments')
+    student = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='student_payments')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='payments')
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_status = models.CharField(max_length=20, choices=(
+        ('requested', 'Requested'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ), default='requested')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def _str_(self):
+        return f'Payment for {self.property.id} by {self.student}'

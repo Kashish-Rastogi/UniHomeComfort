@@ -1,0 +1,134 @@
+{% extends 'mainapp/base.html' %}
+
+{% block body_block %}
+<style>
+  .notification {
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+  }
+
+  .notification h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .notification p {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .notification form,
+  .notification button[disabled] {
+    margin-top: 10px;
+  }
+
+  button[disabled] {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+
+  form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  form button:hover {
+    opacity: 0.85;
+  }
+
+</style>
+
+<div class="bg-gray-100 h-screen w-screen p-5">
+    <h1 class="text-2xl font-bold">Notifications</h1>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if user_type == 'owner' %}
+        {% if properties %}
+            <div class="flex flex-col gap-4 p-10">
+            {% for property_data in properties %}
+            <div class="flex justify-between items-center bg-white shadow-md rounded-2xl p-10 py-5">
+                <div class="flex flex-col gap-1">
+                <div class="text-sm">Property:</div>
+                <h3 class="text-xl font-bold">{{ property_data.property.title }}</h3>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="text-sm">Bidding End Date: </div>
+                    <div class="text-lg">{{ property_data.property.bidding_end_date }}</div>
+                </div>
+              <div class="flex flex-col gap-1">
+                    <div class="text-sm">Bidder: </div>
+                    <div class="text-lg">{{ property_data.student_name }}</div>
+                </div>
+              <div class="flex flex-col gap-1">
+                    <div class="text-sm">Amount: </div>
+                    <div class="text-lg">{{ property_data.highest_bid }}</div>
+                </div>
+
+                {% if request.session.payment_requested_property_data.property.id %}
+                    <button disabled>Requested</button>
+                {% else %}
+                    <form method="post" action="{% url 'send_payment_request' property_data.property.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Send Payment Request</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p>No near expiry properties found.</p>
+        {% endif %}
+    {% elif user_type == 'student' %}
+        {% if payments %}
+            {% for payment in payments %}
+{#            <div class="notification">#}
+{#                <h3>{{ payment.property.title }}</h3>#}
+{#                <p>Payment Amount: {{ payment.payment_amount }}</p>#}
+{#                #}
+{#            </div>#}
+                 <div class="flex justify-between items-center bg-white shadow-md rounded-2xl p-10 py-5">
+                <div class="flex flex-col gap-1">
+                <div class="text-sm">Property:</div>
+                <h3 class="text-xl font-bold">{{ payment.property.title }}</h3>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="text-sm">Pay before: </div>
+                    <div class="text-lg">{{ payment.pay_before }}</div>
+                </div>
+              <div class="flex flex-col gap-1">
+                    <div class="text-sm">Owner: </div>
+                    <div class="text-lg">{{ payment.owner.first_name }} {{ payment.owner.last_name }}</div>
+                </div>
+              <div class="flex flex-col gap-1">
+                    <div class="text-sm">Amount: </div>
+                    <div class="text-lg">{{ payment.payment_amount }}</div>
+                </div>
+
+
+                <form method="post" action="{% url 'do_payment' payment.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Pay now</button>
+                </form>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No payment requests found.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
