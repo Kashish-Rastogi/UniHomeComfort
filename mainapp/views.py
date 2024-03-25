@@ -352,6 +352,11 @@ def send_message(request):
 
     return JsonResponse({'status': 'error'}, status=400)
 
+@login_required(login_url='/login/')
+def success_page(request):
+    if request.session['user_type'] == "owner":
+        return redirect('login-page')
+    return render(request, 'mainapp/success.html')
 
 # ################# Jainam #################
 
@@ -651,9 +656,8 @@ def bidding(request, property_id):
     property_data = get_object_or_404(Property, pk=property_id)
     if property_data.availability_status == "not_available" or property_data.availability_status == "coming_soon":
         return redirect('mainapp:property_listing')
-    max_bidding_amount = \
-        Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
-            'max_bidding_amount']
+    max_bidding_amount= Bidding.objects.filter(property_id=property_id).aggregate(max_bidding_amount=Max('bidding_amount'))[
+        'max_bidding_amount']
     print(max_bidding_amount)
     if max_bidding_amount is None:
         max_bidding_amount = property_data.bidding_min_limit
@@ -670,15 +674,14 @@ def bidding(request, property_id):
             form.student = student
             form.bidding_amount = request.POST['bidding_amount']
             form.save()
-            return redirect('property_listing')
+            return redirect('success')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
         form = BidForm(initial={'bidding_amount': max_bidding_amount or 2000})  # Example current bid
-    return render(request, 'mainapp/bidding.html',
-                  {'form': form, 'property_data': property_data, 'max_bidding_amount': max_bidding_amount})
+    return render(request, 'mainapp/bidding.html',{'form': form, 'property_data': property_data,'max_bidding_amount': max_bidding_amount})
 
 
 def aboutus(request):

@@ -1,33 +1,20 @@
+{% extends 'mainapp/base.html' %}
+{% block body_block %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Changed Successfully</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .success-message {
-            color: green;
-            font-size: 24px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <p class="success-message">Changed Successfully</p>
+<div class="bg-gray-100 h-screen flex justify-center items-center">
+    <div class="max-w-lg bg-white p-8 rounded-lg shadow-lg">
+        <div class="flex justify-center mb-6">
+
+            <svg class="w-20 h-20 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 text-center mb-4">Bidding Registered</h1>
+        <p class="text-gray-600 text-center">Your bid has been successfully registered.</p>
+        <a href="{% url 'property_listing' %}" class="flex justify-center mt-6 bg-gray-900 hover:bg-gray-700 rounded-2xl px-4 py-3 text-white">
+            View more properties
+        </a>
     </div>
-</body>
-</html>
+</div>
+
+{% endblock %}

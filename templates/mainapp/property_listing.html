@@ -156,21 +156,33 @@
                                 <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
                             </div>
                         </div>
-                        <div class="flex gap-4 mt-3">
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold">Bedrooms</span>
-                                <div class="flex gap-2 items-center">
-                                    <i class="fa-solid fa-bed"></i>
-                                    <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                        <div class="flex gap-4 mt-3 justify-between">
+                            <div class="flex gap-4">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold">Bedrooms</span>
+                                    <div class="flex gap-2 items-center">
+                                        <i class="fa-solid fa-bed"></i>
+                                        <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold">Bathrooms</span>
+                                    <div class="flex gap-2 items-center">
+                                        <i class="fa-solid fa-shower"></i>
+                                        <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold">Bathrooms</span>
-                                <div class="flex gap-2 items-center">
-                                    <i class="fa-solid fa-shower"></i>
-                                    <span class="font-bold">{{ property.number_of_bathrooms }}</span>
-                                </div>
+                            <div class="text-center items-center justify-center flex">
+                                {% if property.availability_status == "available" %}
+                                    <button class="text-xs bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">{{ property.availability_status|upper }}</button>
+                                {% elif property.availability_status == "not_available" %}
+                                    <button class="text-xs bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">NOT AVAILABLE</button>
+                                {% elif property.availability_status == "coming_soon" %}
+                                    <button class="text-xs bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded">COMING SOON</button>
+                                {% endif %}
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -204,22 +216,34 @@
                             <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
                         </div>
                     </div>
-                    <div class="flex gap-4 mt-3">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold">Bedrooms</span>
-                            <div class="flex gap-2 items-center">
-                                <i class="fa-solid fa-bed"></i>
-                                <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                 <div class="flex gap-4 mt-3 justify-between">
+                            <div class="flex gap-4">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold">Bedrooms</span>
+                                    <div class="flex gap-2 items-center">
+                                        <i class="fa-solid fa-bed"></i>
+                                        <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold">Bathrooms</span>
+                                    <div class="flex gap-2 items-center">
+                                        <i class="fa-solid fa-shower"></i>
+                                        <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold">Bathrooms</span>
-                            <div class="flex gap-2 items-center">
-                                <i class="fa-solid fa-shower"></i>
-                                <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                            <div class="text-center items-center justify-center flex">
+                                {% if property.availability_status == "available" %}
+                                    <button class="text-xs bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">{{ property.availability_status|upper }}</button>
+                                {% elif property.availability_status == "not_available" %}
+                                    <button class="text-xs bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">NOT AVAILABLE</button>
+                                {% elif property.availability_status == "coming_soon" %}
+                                    <button class="text-xs bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded">COMING SOON</button>
+                                {% endif %}
                             </div>
+
                         </div>
-                    </div>
                 </div>
             </div>
         </a>
