@@ -21,15 +21,15 @@
                         </a>
 
                     </li>
-                    <li>
-                        <button class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
-                            <span>Payments</span>
-                        </button>
-                    </li>
+{#                    <li>#}
+{#                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">#}
+{#                            <span>Payments</span>#}
+{#                        </a>#}
+{#                    </li>#}
                     <li >
-                        <button class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                        <a href="{% url 'owner_settings' %}" class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Settings</span>
-                        </button>
+                        </a>
                     </li>
                 </ul>
                               </div>
@@ -38,10 +38,13 @@
         <div class="flex-1 p-6">
             {# button new prop #}
             <div class="flex j justify-between items-center">
-            <div class="flex flex-col gap-2">
-                <p class="font-bold">Welcome!</p>
-                <h1 class="flex-1 text-2xl font-bold mb-4 -mt-1 text-black">{{ pro.id }}</h1>
+                <div class="flex flex-col gap-2">
+                    <p class="font-bold">Welcome {{ request.session.user_type }}!</p>
+                    <h1 class="flex-1 text-2xl font-bold mb-4 -mt-1">{{ request.user.first_name|capfirst }} {{ request.user.last_name|capfirst }}</h1>
                 </div>
+{#                <div class="flex">#}
+{#                <a href="{% url 'owner-add-property' %}" class="py-2 px-4 bg-gray-700 hover:bg-blue-700 text-white font-bold rounded">Add New Property</a>#}
+{#            </div>#}
             </div>
             {# filters #}
            <div class="bg-white p-8 border border-slate-900 rounded-xl">
@@ -84,8 +87,10 @@
             <tr class="item-center justify-center border-b-2 border-black-500">
                 <td class="w-5/12" style="width: 40%">
                     <div>
-                        <a href="#" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
-                            <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="/docs/images/blog/image-4.jpg" alt="">
+                        <a href="{% url 'property_detail' pro.id %}" class="flex flex-col bg-white rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            {% if pro.prop_image1 %}
+                                <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src="{{ pro.prop_image1.url }}" alt="property_image">
+                            {% endif %}
                             <div class="flex justify-start item-start flex-col p-2 leading-normal ">
                                 <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ pro.title }}</p>
                                 <p class="font-normal text-gray-700 dark:text-gray-400">{{ pro.city }}, {{ pro.zipcode }}</p>

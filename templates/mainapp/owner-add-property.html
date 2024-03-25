@@ -85,7 +85,7 @@
 
             <div class="flex flex-wrap mt-4 gap-4">
                 <div class="flex flex-wrap w-1/2">
-                    <div class="flex flex-col flex-1">
+                    <div class="flex flex-1 gap-4 items-center">
                         {{ property_form.is_biddable }}
                         <label for="{{ property_form.is_biddable.id_for_label }}">Biddable</label>
                     </div>
@@ -140,7 +140,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
+{#            href="{% url 'owner-add-property' %}"#}
             <button type="submit"
                class="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700"> Add Property
             </button>

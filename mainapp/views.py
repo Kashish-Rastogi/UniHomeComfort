@@ -493,120 +493,153 @@ def landingpage(request):
 
 # ################# Kashish #################
 @login_required(login_url='/login/')
-def user_property_visits(request):
-    visited_properties_ids = request.session.get('visited_properties',[])
-    if len(visited_properties_ids) > 0:
-        visited_properties = Property.objects.filter(id__in=visited_properties_ids)
-        return render(request, 'mainapp/user-property-visits.html', {'properties': visited_properties})
-    elif request.user.is_authenticated:
-        user = AppUser.objects.get(username=request.user.username)
-        user_history = PropertyVisits.objects.filter(user=user)
-        if user_history.count() > 0:
-            visited_properties = Property.objects.filter(id__in = eval(user_history[0].visited_properties))
-        else:
-            visited_properties = []
-        return render(request,'mainapp/user-property-visits.html',{'properties':visited_properties})
-@login_required(login_url='/login/')
 def owner_view_all_properties(request):
-    property_type = request.GET.get('property_type', '')
-    types = PropertyType.objects.all()  # Fetch all categories from database
-    print(types)
-    if property_type and property_type != 'all':
-        properties = (Property.objects.filter(owner=request.user).filter(property_type=property_type.lower()))
-    else:
-        properties = Property.objects.filter(owner=request.user)
+   property_type = request.GET.get('property_type', '')
+   types = PropertyType.objects.all()  # Fetch all categories from database
+   print(types)
+   if property_type and property_type != 'all':
+       properties = (Property.objects.filter(owner=request.user).filter(property_type=property_type.lower()))
+   else:
+       properties = Property.objects.filter(owner=request.user)
 
-    return render(request, 'mainapp/owner-view-all-properties.html', {
-        'properties': properties,
-        'types': types,
-        'selected_property_type': property_type
-    })
+
+   return render(request, 'mainapp/owner-view-all-properties.html', {
+       'properties': properties,
+       'types': types,
+       'selected_property_type': property_type
+   })
+
 
 @login_required(login_url='/login/')
 def owner_add_property(request):
-    if request.method == 'POST':
-        form = PropertyForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Associate current user as the owner of the property
-            property = form.save(commit=False)
-            owner = AppUser.objects.get(username=request.user.username)
-            property.owner = owner  # Assuming user is logged in
-            property.save()
+   if request.session['user_type'] == "student":
+       return redirect('login-page')
+   if request.method == 'POST':
+       form = PropertyForm(request.POST, request.FILES)
+       if form.is_valid():
+           # Associate current user as the owner of the property
+           property = form.save(commit=False)
+           owner = AppUser.objects.get(username=request.user.username)
+           property.owner = owner  # Assuming user is logged in
+           property.save()
 
-            return redirect('owner-view-all-properties')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = PropertyForm()
-    return render(request, 'mainapp/owner-add-property.html', {'property_form': form})
+
+           return redirect('owner-view-all-properties')
+       else:
+           for field, errors in form.errors.items():
+               for error in errors:
+                   messages.error(request, f"{field}: {error}")
+   else:
+       form = PropertyForm()
+   return render(request, 'mainapp/owner-add-property.html', {'property_form': form})
+
 
 @login_required(login_url='/login/')
 def owner_edit_property(request, property_id):
-    property = get_object_or_404(Property, id=property_id, owner=request.user)
-    if request.method == 'POST':
-        form = PropertyForm(request.POST, request.FILES, instance=property)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Property updated successfully.")
-            return redirect('owner-view-all-properties')  # Redirect to the property listing
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = PropertyForm(instance=property)
+   if request.session['user_type'] == "student":
+       return redirect('login-page')
+   property = get_object_or_404(Property, id=property_id, owner=request.user)
+   if request.method == 'POST':
+       form = PropertyForm(request.POST, request.FILES, instance=property)
+       if form.is_valid():
+           form.save()
+           messages.success(request, "Property updated successfully.")
+           return redirect('owner-view-all-properties')  # Redirect to the property listing
+       else:
+           for field, errors in form.errors.items():
+               for error in errors:
+                   messages.error(request, f"{field}: {error}")
+   else:
+       form = PropertyForm(instance=property)
 
-    return render(request, 'mainapp/owner-edit-property.html', {
-        'property_form': form,
-        'property': property
-    })
 
+   return render(request, 'mainapp/owner-edit-property.html', {
+       'property_form': form,
+       'property': property
+   })
+
+
+@login_required(login_url='/login/')
 def owner_delete_property(request, property_id):
-    property_instance = get_object_or_404(Property, id=property_id)
-    property_instance.delete()
-    return redirect('owner-view-all-properties')
+   if request.session['user_type'] == "student":
+       return redirect('login-page')
+   property_instance = get_object_or_404(Property, id=property_id)
+   property_instance.delete()
+   return redirect('owner-view-all-properties')
 
+
+@login_required(login_url='/login/')
 def property_detail(request, property_id):
-    property = get_object_or_404(Property,id=property_id)
-    if request.user.is_authenticated:
-        if 'visited_properties' not in request.session:
-            request.session['visited_properties'] = []
-        visited_properties = request.session['visited_properties']
+   property = get_object_or_404(Property,id=property_id)
+   bids = []
+   if request.session['user_type'] == "student":
+       user = AppUser.objects.get(username=request.user.username)
+       bids = Bidding.objects.filter(property=property, student=user).order_by('-bidding_amount')
+   if request.user.is_authenticated:
+       if 'visited_properties' not in request.session:
+           request.session['visited_properties'] = []
+       visited_properties = request.session['visited_properties']
 
-        if property_id not in visited_properties:
-            visited_properties.append(property_id)
-            request.session['visited_properties'] = visited_properties
-    return render(request, 'mainapp/property-details.html', {'property': property})
 
+       if property_id not in visited_properties:
+           visited_properties.append(property_id)
+           request.session['visited_properties'] = visited_properties
+   if len(bids) > 0:
+       return render(request, 'mainapp/property-details.html', {'property': property, 'bid': bids.first()})
+   else:
+       return render(request, 'mainapp/property-details.html', {'property': property})
+
+
+@login_required(login_url='/login/')
 def owner_property_bids(request):
-    property_type = request.GET.get('property_type', '')
-    selected_property = request.GET.get('selected_property', '')
-    types = PropertyType.objects.all()  # Assuming this is for display purposes in the template
-    owner_properties = Property.objects.filter(owner=request.user)  # Assuming this is for display purposes in the template
+   if request.session['user_type'] == "student":
+       return redirect('login-page')
+   property_type = request.GET.get('property_type', '')
+   selected_property = request.GET.get('selected_property', '')
+   types = PropertyType.objects.all()  # Assuming this is for display purposes in the template
+   owner_properties = Property.objects.filter(owner=request.user)  # Assuming this is for display purposes in the template
 
-    if property_type and property_type != 'all':
-        # Filter properties directly by property_type value, not by property_type__id
-        properties = Property.objects.filter(owner=request.user, property_type=property_type.lower())
-    else:
-        # Fetch all properties for this owner if no specific type is requested or 'all' is specified
-        properties = Property.objects.filter(owner=request.user)
 
-    if selected_property and selected_property != 'all':
-        properties = properties.filter(id=selected_property)
+   if property_type and property_type != 'all':
+       # Filter properties directly by property_type value, not by property_type__id
+       properties = Property.objects.filter(owner=request.user, property_type=property_type.lower())
+   else:
+       # Fetch all properties for this owner if no specific type is requested or 'all' is specified
+       properties = Property.objects.filter(owner=request.user)
 
-    properties = properties.values_list('id',flat=True)
-    # Filter bids where property_id is in the list of properties' ids
-    bids = Bidding.objects.filter(property__id__in=list(properties)).order_by('-time')
 
-    return render(request, 'mainapp/owner-property-bids.html', {
-        'bids': bids,
-        'types': types,
-        'selected_property_type': property_type,
-        'owner_properties':owner_properties,
-        'selected_property':selected_property
-    })
+   if selected_property and selected_property != 'all':
+       properties = properties.filter(id=selected_property)
+
+
+   properties = properties.values_list('id',flat=True)
+   # Filter bids where property_id is in the list of properties' ids
+   bids = Bidding.objects.filter(property__id__in=list(properties)).order_by('-time')
+
+
+   return render(request, 'mainapp/owner-property-bids.html', {
+       'bids': bids,
+       'types': types,
+       'selected_property_type': property_type,
+       'owner_properties':owner_properties,
+       'selected_property':selected_property
+   })
+
+
+@login_required(login_url='/login/')
+def user_property_visits(request):
+   visited_properties_ids = request.session.get('visited_properties',[])
+   if len(visited_properties_ids) > 0:
+       visited_properties = Property.objects.filter(id__in=visited_properties_ids)
+       return render(request, 'mainapp/user-property-visits.html', {'properties': visited_properties})
+   elif request.user.is_authenticated:
+       user = AppUser.objects.get(username=request.user.username)
+       user_history = PropertyVisits.objects.filter(user=user)
+       if user_history.count() > 0:
+           visited_properties = Property.objects.filter(id__in = eval(user_history[0].visited_properties))
+       else:
+           visited_properties = []
+       return render(request,'mainapp/user-property-visits.html',{'properties':visited_properties})
 
 # ################# Kashsih #################
 

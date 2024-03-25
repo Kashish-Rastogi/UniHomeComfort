@@ -137,7 +137,7 @@ class PropertyForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={'class': 'common-input w-full'}),
             'availability_status': forms.Select(attrs={'class': 'common-input w-full'}),
             'available_from': forms.DateInput(attrs={'class': 'common-input w-full'}),
-            'is_biddable': forms.CheckboxInput(attrs={'class': 'common-checkbox w-full'}),
+            'is_biddable': forms.CheckboxInput(attrs={'class': 'common-checkbox '}),
             'bidding_min_limit': forms.NumberInput(attrs={'class': 'common-input w-full'}),
             'lease_duration': forms.NumberInput(attrs={'class': 'common-input'}),
             'allowed_lease_people': forms.NumberInput(attrs={'class': 'common-input'}),
