@@ -1,15 +1,25 @@
 {% extends 'mainapp/base.html' %}
-
 {% block body_block %}
 <div class="min-h-screen bg-gray-100 flex">
     <div class="w-64 bg-gray-800 text-white">
         <div class="p-5">
             <h1 class="text-xl font-bold mb-4">Dashboard</h1>
             <ul class="space-y-2">
-                <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">My Properties</a></li>
-                <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">Property Bids</a></li>
-                <li><a href="{% url 'property_detail' %}" class="block p-2 hover:bg-gray-700 rounded">Payments</a></li>
-                <li><a href="{% url 'student_settings' %}" class="block p-2 hover:bg-gray-700 rounded">Settings</a></li>
+                <li >
+                        <a href="{% url 'view-bidded-properties' %}" class="p-2 hover:bg-gray-900 rounded-xl active flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
+                            <span>Bidded Properties</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Payments</span>
+                        </a>
+                    </li>
+                    <li >
+                        <a href="{% url 'student_settings' %}" class="p-2  bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Settings</span>
+                        </a>
+                    </li>
             </ul>
         </div>
     </div>

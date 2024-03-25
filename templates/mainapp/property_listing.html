@@ -96,96 +96,169 @@
     }
 </style>
 
-<div class="filter-container p-4 px-8">
-    <!-- Filter buttons -->
-    <div class="filter-buttons">
-        <form method="get" action="">
-            <button class="filter-button {% if request.GET.type == 'all' %}active{% endif %}" name="type" value="all" type="submit">All Types</button>
-            <button class="filter-button {% if request.GET.type == 'house' %}active{% endif %}" name="type" value="house" type="submit">House</button>
-            <button class="filter-button {% if request.GET.type == 'condo' %}active{% endif %}" name="type" value="condo" type="submit">Condo</button>
-            <button class="filter-button {% if request.GET.type == 'apartment' %}active{% endif %}" name="type" value="apartment" type="submit">Apartment</button>
-        </form>
-    </div>
-    <div class="flex items-center gap-4">
-{#        <form id="search-form" method="get" action="">#}
-{#            <input class="search-input" type="text" name="search" placeholder="Search by property title" value="{{ request.GET.search }}">#}
-{#        </form>#}
-{#        <button class="filter-button {% if request.GET.type == 'all' %}active{% endif %}" type="button" onclick="searchByTitle()">Search</button>#}
-
-        <form class="flex items-center gap-4 " id="search-form" method="get" action="">
-            <input id="search-input" class="flex-1 rounded-xl bg-gray-100" name="search" placeholder="Search by property title" value="{{ request.GET.search }}"/>
-        </form>
+<div class="flex flex-col h-screen">
+   {% if request.user.is_authenticated %}
+    <div class="filter-container p-4 px-8">
+        <!-- Filter buttons -->
+        <div class="filter-buttons">
+            <form method="get" action="">
+                <button class="filter-button {% if request.GET.type == 'all' %}active{% endif %}" name="type" value="all" type="submit">All Types</button>
+                <button class="filter-button {% if request.GET.type == 'house' %}active{% endif %}" name="type" value="house" type="submit">House</button>
+                <button class="filter-button {% if request.GET.type == 'condo' %}active{% endif %}" name="type" value="condo" type="submit">Condo</button>
+                <button class="filter-button {% if request.GET.type == 'apartment' %}active{% endif %}" name="type" value="apartment" type="submit">Apartment</button>
+            </form>
+        </div>
+        <div class="flex items-center gap-4">
+            <form class="flex items-center gap-4 " id="search-form" method="get" action="">
+                <input id="search-input" class="flex-1 rounded-xl bg-gray-100" name="search" placeholder="Search by property title" value="{{ request.GET.search }}"/>
+            </form>
             <button class="rounded-xl bg-blue-900 text-white hover:bg-blue-800 py-3 px-4 {% if request.GET.type == 'all' %}active{% endif %}" type="button" onclick="searchByTitle()">Search</button>
+        </div>
     </div>
-</div>
+    {% endif %}
+    <div class="flex flex-col flex-1">
+        <!-- Search bar -->
+    {% if not request.user.is_authenticated %}
 
-<!-- Search bar -->
-
-<div class="flex flex-wrap px-8 gap-6 ">
-    <!-- Loop through properties to generate property cards -->
-    {% for property in properties %}
-    <a href="{% url 'property_detail' property.id %}" class="w-full md:w-1/4 mb-4 transition ease-in-out hover:shadow-2xl duration-300">
-        <div class="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
-            {% if property.prop_image1 %}
-            <img class="object-cover w-full h-48" src="{{ property.prop_image1.url }}" alt="{{ property.title }}">
-            {% endif %}
-            <div class="p-4">
-                <div class="flex justify-between">
-                    <div>
-                        <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ property.title }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">{{ property.city }}, {{ property.zipcode }}</p>
-                        <p class="text-sm font-normal text-gray-700 dark:text-gray-400">Expires on: {{ property.bidding_end_date }}</p>
+        {% if not request.GET.institute_name %}
+            <div class="flex flex-1 justify-center -mt-20 items-center">
+                 <form class="flex w-full flex-col items-center gap-4" method="get" action="">
+                        <label for="institute_name">Select your institute to view accommodation</label>
+                    <div class="flex w-full justify-center items-center gap-4">
+                         <select class="w-1/4 rounded-xl bg-gray-100 border-2 py-3 px-4 " name="institute_name">
+                            {% for institute in institutes %}
+                                <option value="{{ institute }}" {% if institute == request.GET.institute_name %} selected {% endif %}>{{ institute.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="rounded-xl bg-blue-900 text-white hover:bg-blue-800 py-3 px-4 {% if request.GET.type == 'all' %}active{% endif %}" type="submit" >Search</button>
                     </div>
-                    <div class="text-right">
-                        <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">Price</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 mt-3">
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold">Bedrooms</span>
-                        <div class="flex gap-2 items-center">
-                            <i class="fa-solid fa-bed"></i>
-                            <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                </form>
+            </div>
+        {% endif %}
+        {% if properties %}
+              <div class="flex flex-wrap px-8 gap-6 mt-5">
+        <!-- Loop through properties to generate property cards -->
+            {% for property in properties %}
+            <a href="{% url 'property_detail' property.id %}" class="w-full md:w-1/4 mb-4 transition ease-in-out hover:shadow-2xl duration-300">
+                <div class="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                    {% if property.prop_image1 %}
+                    <img class="object-cover w-full h-48" src="{{ property.prop_image1.url }}" alt="{{ property.title }}">
+                    {% endif %}
+                    <div class="p-4">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ property.title }}</p>
+                                <p class="font-normal text-gray-700 dark:text-gray-400">{{ property.city }}, {{ property.zipcode }}</p>
+                                <p class="text-sm font-normal text-gray-700 dark:text-gray-400">Expires on: {{ property.bidding_end_date }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">Price</p>
+                                <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-3">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold">Bedrooms</span>
+                                <div class="flex gap-2 items-center">
+                                    <i class="fa-solid fa-bed"></i>
+                                    <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold">Bathrooms</span>
+                                <div class="flex gap-2 items-center">
+                                    <i class="fa-solid fa-shower"></i>
+                                    <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold">Bathrooms</span>
-                        <div class="flex gap-2 items-center">
-                            <i class="fa-solid fa-shower"></i>
-                            <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% elif request.GET.institute_name %}
+            <div class="flex flex-col flex-1 justify-center items-center">
+                <strong class="text-2xl font-bold">No properties found nearby selected institute!</strong>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if properties %}
+        <div class="flex flex-wrap px-8 gap-6 ">
+        <!-- Loop through properties to generate property cards -->
+        {% for property in properties %}
+        <a href="{% url 'property_detail' property.id %}" class="w-full md:w-1/4 mb-4 transition ease-in-out hover:shadow-2xl duration-300">
+            <div class="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                {% if property.prop_image1 %}
+                <img class="object-cover w-full h-48" src="{{ property.prop_image1.url }}" alt="{{ property.title }}">
+                {% endif %}
+                <div class="p-4">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">{{ property.title }}</p>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">{{ property.city }}, {{ property.zipcode }}</p>
+                            <p class="text-sm font-normal text-gray-700 dark:text-gray-400">Expires on: {{ property.bidding_end_date }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-md font-bold tracking-tight text-gray-900 dark:text-white">Price</p>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">${{ property.price }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 mt-3">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold">Bedrooms</span>
+                            <div class="flex gap-2 items-center">
+                                <i class="fa-solid fa-bed"></i>
+                                <span class="font-bold">{{ property.number_of_bedrooms }}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold">Bathrooms</span>
+                            <div class="flex gap-2 items-center">
+                                <i class="fa-solid fa-shower"></i>
+                                <span class="font-bold">{{ property.number_of_bathrooms }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </a>
-    {% endfor %}
-</div>
+        </a>
 
-<script>
-    function searchByTitle() {
-        var searchInput = document.querySelector('#search-input').value;
-        window.location.href = '/property_listing/?search=' + searchInput;
-    }
-</script>
-
-    <!-- Pagination controls -->
-<div class="pagination">
-    <span class="step-links">
-        {% if properties.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ properties.previous_page_number }}">previous</a>
+        {% endfor %}
+    </div>
+        {% else %}
+            <div class="flex flex-col flex-1 justify-center items-center -mt-32">
+                <strong class="text-2xl font-bold">No properties found !</strong>
+            </div>
         {% endif %}
+    {% endif %}
 
-        <span class="current">
-            Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+    <script>
+        function searchByTitle() {
+            var searchInput = document.querySelector('#search-input').value;
+            window.location.href = '/property_listing/?search=' + searchInput;
+        }
+    </script>
+    </div>
+        <!-- Pagination controls -->
+    {% if properties %}
+    <div class="pagination flex justify-center mt-8 mb-8">
+        <span class="step-links">
+            {% if properties.has_previous %}
+                <a href="?page=1" class="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">&laquo; firsta</a>
+                <a href="?page={{ properties.previous_page_number }}" class="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 ">previous</a>
+            {% endif %}
+
+            <span class="current px-4 py-1 bg-gray-200 text-gray-700 rounded-md">
+                Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+            </span>
+
+            {% if properties.has_next %}
+                <a href="?page={{ properties.next_page_number }}" class="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 ml-1">next</a>
+                <a href="?page={{ properties.paginator.num_pages }}" class="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600">last &raquo;</a>
+            {% endif %}
         </span>
-
-        {% if properties.has_next %}
-            <a href="?page={{ properties.next_page_number }}">next</a>
-            <a href="?page={{ properties.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+    </div>
+{% endif %}
 </div>
 {% endblock %}

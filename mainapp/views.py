@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_POST
-from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits
+from .models import Property, CommunityPost, Category, Bidding, AppUser, PropertyType, PropertyVisits, Institute
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
@@ -20,13 +20,10 @@ from django.db.models import Max
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Max, Count
-<<<<<<< HEAD
 from datetime import timezone
 
 
 
-=======
->>>>>>> fe365b6db74c95a36d358c9286706a2eaa388b2b
 # ################# Jainam #################
 def loginpage(request):
     if request.user.is_authenticated:
@@ -247,36 +244,52 @@ def property_owner_register(request):
 
 def property_listing(request):
     print(request.user)
-    current_user = AppUser.objects.get(username=request.user.username)
-    # current_user = AppUser.obj request.user.appuser
-    selected_types = request.GET.getlist('type', ['all'])  # Default to ['all'] if not provided
-    search_query = request.GET.get('search', '')
-    print('-----------> ', current_user.is_student)
+    institute_name = request.GET.get('institute_name', '')
+    if not request.user.is_authenticated:
+        properties_query = []
+        if institute_name != '':
+            institute = Institute.objects.get(name=institute_name)
+            properties_query = Property.objects.filter(city=institute.city)
+        paginator = Paginator(properties_query, 8)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-    properties_query = Property.objects.all()
+        return render(request, 'mainapp/property_listing.html',
+                      {'properties': page_obj, 'institutes': Institute.objects.all()})
+    else:
+        current_user = AppUser.objects.get(username=request.user.username)
+        selected_types = request.GET.getlist('type', ['all'])
+        search_query = request.GET.get('search', '')
+        print('-----------> ', current_user.is_student)
 
-    if current_user.is_owner:
-        properties_query = properties_query.filter()
-    elif current_user.is_student:
-        if current_user.institute and current_user.institute.city:
-            institute_city = current_user.institute.city
-            properties_query = properties_query.filter(city=institute_city)
+        properties_query = Property.objects.all()
 
-    # Filter by selected property types, ignore if 'all' is selected
-    if 'all' not in selected_types:
-        properties_query = properties_query.filter(property_type__in=selected_types)
 
-    if search_query:
-        properties_query = properties_query.filter(title__icontains=search_query)
 
-    paginator = Paginator(properties_query, 8)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+        if current_user.is_owner:
+            properties_query = properties_query.filter()
+        elif current_user.is_student:
+            if current_user.institute and current_user.institute.city:
+                institute_city = current_user.institute.city
+                properties_query = properties_query.filter(city=institute_city)
 
-    return render(request, 'mainapp/property_listing.html', {'properties': page_obj, 'selected_types': selected_types})
+        # Filter by selected property types, ignore if 'all' is selected
+        if 'all' not in selected_types:
+            properties_query = properties_query.filter(property_type__in=selected_types)
 
-@login_required
+        if search_query:
+            properties_query = properties_query.filter(title__icontains=search_query)
+
+        paginator = Paginator(properties_query, 8)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'mainapp/property_listing.html', {'properties': page_obj, 'selected_types': selected_types, 'institutes': Institute.objects.all()})
+
+@login_required(login_url="/login/")
 def student_settings(request):
+    if request.session['user_type'] == "owner":
+        return redirect('login-page')
     user = AppUser.objects.get(username=request.user.username)
     if request.method == 'POST':
         user_form = StudentSettingsForm(request.POST, instance=user)
@@ -623,36 +636,6 @@ def view_my_posts(request):
 
 ###################  Haseeb #################
 
-
-def forgot_password(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        new_password = request.POST.get('newPassword')
-        confirm_password = request.POST.get('confirmPassword')
-        if new_password != confirm_password:      # Check if passwords match
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'forgot_password.html')
-
-        token = urlsafe_base64_encode(force_bytes(email))    # For demonstration purposes, we're encoding the email address in base64 
- 	# Django's token generator or any other secure method to generate the token
-        
-        reset_link = request.build_absolute_uri(f'/reset-password/{token}/') # Construct the password reset link
-
-       
-        subject = 'Password Reset Request'       # Send the password reset link to the user's email
-        message = f'Hello,\n\nPlease click the following link to reset your password:\n{reset_link}'
-        from_email = settings.EMAIL_HOST_USER
-        to_email = [email]
-        send_mail(subject, message, from_email, to_email, fail_silently=False)
-
-        messages.success(request, "Password reset link sent to your email. Check your inbox.")
-        return render(request, 'forgot_password.html')
-
-    return render(request, 'mainapp/forgot_password.html')
-
-
-
-
 @login_required(login_url='mainapp/login-page')  # Ensure that only authenticated users can access this view
 def ownerdashboard(request):
     current_time = timezone.now()  # Get the current time
@@ -681,7 +664,7 @@ def ownerdashboard(request):
     property_type_form = PropertyTypeForm()  # Create an instance of the PropertyTypeForm
     
     # Render the owner dashboard template with properties, property type form, and expired properties
-    return render(request, 'mainapp/owner-dashboard.html', {
+    return render(request, 'mainapp/owner-view-all-properties.html', {
         'properties': properties,  # Pass properties to the template
         'property_type_form': property_type_form,  # Pass property type form to the template
         'expired_properties': expired_properties  # Pass expired properties to the template
@@ -701,6 +684,7 @@ def forget_password(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             new_password = form.cleaned_data['new_password']
+            print(new_password)
             user = User.objects.filter(username=username).first()
             if user:
                 # Check if the entered username matches the user's username
@@ -708,9 +692,10 @@ def forget_password(request):
                     # Update the user's password
                     user.set_password(new_password)
                     user.save()
-                    return render(request, 'webPages/success.html') # Redirect to success page
+                    print(new_password)
+                    return redirect('login-page') # Redirect to success page
     else:
         form = ForgetPasswordForm()
-    return render(request, 'webPages/forget.html', {'form': form})
+    return render(request, 'mainapp/forget.html', {'form': form})
 
 
