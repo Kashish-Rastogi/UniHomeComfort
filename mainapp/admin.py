@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType, CommunityPost
-
 from .models import AppUser, Institute, Property, Bidding, Forum, PropertyDocument, Category, PropertyType, \
-    CommunityPost, PropertyVisits, City
+    CommunityPost, PropertyVisits, City, Payment
+
+
 def user_type(obj):
     if obj.is_owner:
         return "Owner"
@@ -28,7 +28,6 @@ admin.site.register(Forum)
 admin.site.register(PropertyDocument)
 admin.site.register(Category)
 admin.site.register(CommunityPost)
-
 admin.site.register(PropertyVisits)
 admin.site.register(City)
-
+admin.site.register(Payment)

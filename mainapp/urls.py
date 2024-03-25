@@ -1,13 +1,12 @@
 from django.urls import path
-from .import views
-
 from .views import (landingpage, loginpage, community_posts_list, update_community_post,
                     delete_community_post, property_detail, viewbiddedproperties, studentallproperties,
                     bidding, property_listing, register_student_user, owner_view_all_properties,
                     owner_delete_property, property_owner_register, owner_add_property, create_community_post, aboutus,
-                    owner_settings, user_property_visits,
-                    owner_property_bids, owner_edit_property, student_settings, view_my_posts, view_chat, send_message,
-                    notification_list, send_payment_request, do_payment, success_page)
+                    owner_settings, send_message,
+                    owner_property_bids, owner_edit_property, student_settings, view_my_posts, user_property_visits,
+                    view_chat, success_page, notification_list, send_payment_request, do_payment, payment_history)
+from . import views
 
 myapp_name = 'mainapp'
 
@@ -42,6 +41,7 @@ urlpatterns = [
     path('chat/<int:post_id>', view_chat, name='view_chat'),
     path('send-message/', send_message, name='send_message'),
     path('success/', success_page, name='success'),
+    path('payment-history/', payment_history, name='payment-history'),
 # ################# Jainam #################
 
 # ################# Hetansh #################
@@ -57,13 +57,8 @@ urlpatterns = [
     path('send-payment-request/<int:property_id>/', views.send_payment_request, name='send_payment_request'),
 # ################# Hetansh #################
 
-
-
-
 ###################### Haseeb ##################
     path('forget/', views.forget_password, name='forget'),
 
 ###################### Haseeb ##################
 ]
-
-

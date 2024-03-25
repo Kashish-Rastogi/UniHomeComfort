@@ -7,7 +7,8 @@
                 <h1 class="text-2xl flex gap-2 item-center font-bold mb-4">
                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     Dashboard</h1>
-                <ul class="space-y-2">
+                  {% if request.session.user_type == "owner" %}
+                 <ul class="space-y-2">
                     <li >
                         <a href="{% url 'owner-view-all-properties' %}" class="p-2  flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
                             <span>My Properties</span>
@@ -15,28 +16,52 @@
 
                     </li>
                     <li >
-                        <a class="p-2 hover:bg-gray-900 rounded-xl  flex items-center justify-between w-full text-left text-gray-300 hover:text-white"
-                            href={% url 'owner-property-bids' %}>
+                        <a href="{% url 'owner-property-bids' %}" class="p-2 hover:bg-gray-900 rounded-xl  flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Property Bids</span>
                         </a>
 
                     </li>
                     <li>
-                        <button class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Payments</span>
-                        </button>
+                        </a>
                     </li>
                     <li >
-                        <button class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                        <a href="{% url 'owner_settings' %}" class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Settings</span>
-                        </button>
+                        </a>
                     </li>
-                    <li >
-                        <button class="p-2  bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                  <li >
+                        <a href="{% url 'user-property-visits' %}" class="p-2  bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Property Vist History</span>
-                        </button>
+                        </a>
                     </li>
                 </ul>
+                {% else %}
+                    <ul class="space-y-2">
+                    <li >
+                        <a href="{% url 'view-bidded-properties' %}" class="p-2 hover:bg-gray-900 rounded-xl active flex items-center hover:bg-gray-900 rounded-xl justify-between w-full text-left text-gray-300 hover:text-white" id="myPropertiesBtn">
+                            <span>Bidded Properties</span>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Payments</span>
+                        </a>
+                    </li>
+                    <li >
+                        <a href="{% url 'student_settings' %}" class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li >
+                        <a href="{% url 'user-property-visits' %}" class="p-2  bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Property Vist History</span>
+                        </a>
+                    </li>
+                </ul>
+                {% endif %}
                               </div>
         </div>
           {# Main Content #}

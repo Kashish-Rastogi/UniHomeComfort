@@ -20,14 +20,19 @@
                         </a>
 
                     </li>
-{#                    <li>#}
-{#                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">#}
-{#                            <span>Payments</span>#}
-{#                        </a>#}
-{#                    </li>#}
+                    <li>
+                        <a href="{% url 'payment-history' %}" class="p-2 hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Payments</span>
+                        </a>
+                    </li>
                     <li >
                         <a href="{% url 'owner_settings' %}" class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
                             <span>Settings</span>
+                        </a>
+                    </li>
+                     <li >
+                        <a href="{% url 'user-property-visits' %}" class="p-2  hover:bg-gray-900 rounded-xl flex items-center justify-between w-full text-left text-gray-300 hover:text-white">
+                            <span>Property Vist History</span>
                         </a>
                     </li>
                 </ul>
@@ -123,18 +128,18 @@
                     {% if bid.bidding_status == "pending" %}
                       <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.bidding_status|upper }}</button>
                     {% elif bid.bidding_status == "accepted" %}
-                        <button class="bg-orange-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.bidding_status|upper }}</button>
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.bidding_status|upper }}</button>
                     {% elif bid.bidding_status == "accepted" %}
-                      <button class="bg-orange-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.bidding_status|upper }}</button>
+                      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.bidding_status|upper }}</button>
                     {% endif %}
                 </td>
                 <td class="text-center">
                     {% if bid.payment_status == "pending" %}
                       <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
                     {% elif bid.payment_status == "accepted" %}
-                        <button class="bg-orange-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
                     {% elif bid.payment_status == "accepted" %}
-                      <button class="bg-orange-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
+                      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-1">{{ bid.payment_status|upper }}</button>
                     {% endif %}
                 </td>
                 <td class="text-center" >${{ bid.bidding_amount }}</td>

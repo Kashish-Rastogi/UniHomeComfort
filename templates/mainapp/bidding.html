@@ -1,84 +1,70 @@
 {% extends 'mainapp/base.html' %}
 {% block body_block %}
 
-
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-center mb-8">
             <div class="text-4xl font-bold text-gray-800">Your Bidding</div>
         </div>
 
-
         {% if property_data %}
             <form method="post" class=" flex flex-col bg-white p-4 rounded shadow-md">
                 {% csrf_token %}
-                <div class="flex justify-center">
-                    <div class="w-full max-w-2xl">
-                        <img src="{{ property_data.prop_image1.url }}" class="w-full  self-center" alt="Property Image">
-                        <!-- Adjust width and height as needed -->
-                        <div class="font-medium text-xl text-gray-800 mt-8">{{ property_data.title|capfirst }}</div>
-                        <div class="flex justify-between items-center mb-6">
-                            {#                    <div class="flex-1">#}
-                            <div class="text-gray-500">{{ property_data.number_of_bedrooms }} BHK</div>
-                            {#                    </div>#}
-                            {#                    <div class="w-1/5">#}
-                            <div class="text-xl text-gray-800">${{ property_data.price }}</div>
-                            {#                    </div>#}
-                        </div>
-                        <div class="bg-gray-100 p-6 rounded-xl">
-                            <div class="text-gray-500">Bid details</div>
-                            <div class="flex items-center justify-between mt-2">
-                                <div class="text-gray-800">Minimum bid limit</div>
-                                <div class="text-gray-800">${{ property_data.bidding_min_limit }}</div>
-                            </div>
-                            <div class="flex items-center justify-between mt-2">
-                                <div class="text-gray-800">Maximum bid</div>
-                                <div class="text-gray-800">${{ max_bidding_amount }}.00</div>
-                            </div>
-                            <div class="flex items-center justify-between mt-2">
-                                <div class="text-gray-800">Current bid</div>
-                                <div id="current_bid" class="text-gray-800">${{ max_bidding_amount }}.00</div>
-                            </div>
-                            <div class="flex items-center mt-4">
-                                <input class="flex-1 appearance-none border border-gray-300 rounded-md py-2 px-4 bg-white text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                       id="bid_input" name="bidding_amount" type="number"
-                                       placeholder="Enter your bid amount" value="{{ max_bidding_amount }}"
-                                       min="{{ max_bidding_amount }}" onchange="changeCurrentBid(this)">
-                                <button class="flex-shrink-0 bg-gray-900 hover:bg-gray-700 border-gray-900 hover:border-gray-700 text-sm border-4 text-white py-1 px-2 rounded ml-2">
-                                    Submit bid
-                                </button>
+            <div class="flex justify-center">
+            <div class="w-full max-w-2xl">
+                <img src="{{ property_data.prop_image1.url }}" class="w-full  self-center" alt="Property Image"> <!-- Adjust width and height as needed -->
+                <div class="font-medium text-xl text-gray-800 mt-8">{{ property_data.title|capfirst }}</div>
+                <div class="flex justify-between items-center mb-6">
+{#                    <div class="flex-1">#}
+                        <div class="text-gray-500">{{ property_data.number_of_bedrooms }} BHK</div>
+{#                    </div>#}
+{#                    <div class="w-1/5">#}
+                        <div class="text-xl text-gray-800">${{ property_data.price }}</div>
+{#                    </div>#}
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl">
+                    <div class="text-gray-500">Bid details</div>
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="text-gray-800">Minimum bid limit</div>
+                        <div class="text-gray-800">${{ property_data.bidding_min_limit }}</div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="text-gray-800">Maximum bid</div>
+                        <div class="text-gray-800">${{ max_bidding_amount }}.00</div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="text-gray-800">Current bid</div>
+                        <div id="current_bid" class="text-gray-800">${{ max_bidding_amount }}.00</div>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <input class="flex-1 appearance-none border border-gray-300 rounded-md py-2 px-4 bg-white text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="bid_input" name="bidding_amount" type="number" placeholder="Enter your bid amount" value="{{ max_bidding_amount }}" min="{{ max_bidding_amount }}" onchange="changeCurrentBid(this)">
+                        <button class="flex-shrink-0 bg-gray-900 hover:bg-gray-700 border-gray-900 hover:border-gray-700 text-sm border-4 text-white py-1 px-2 rounded ml-2">Submit bid</button>
 
-
-                            </div>
-                            {% if messages %}
+                    </div>
+                     {% if messages %}
                                 <ul class="messages">
                                     {% for message in messages %}
                                         <li>{{ message }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                            <div class="text-gray-500 mt-2">Bids are binding and cannot be canceled or modified after
-                                submission.
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl mt-4">
-                            <div class="flex items-center gap-4">
-                                <div class="text-gray-500 mb-4">{{ property_data.number_of_bedrooms }} Bedrooms</div>
-                                <div class="text-gray-500 mb-4">{{ property_data.number_of_bathrooms }} Bathrooms</div>
-                            </div>
-                            <div class="text-gray-500">{{ property_data.address }}</div>
-                        </div>
-                    </div>
+                    <div class="text-gray-500 mt-2">Bids are binding and cannot be canceled or modified after submission.</div>
                 </div>
+                <div class="bg-white p-6 rounded-xl mt-4">
+                    <div class="flex items-center gap-4">
+                        <div class="text-gray-500 mb-4">{{ property_data.number_of_bedrooms }} Bedrooms</div>
+                        <div class="text-gray-500 mb-4">{{ property_data.number_of_bathrooms }} Bathrooms</div>
+                    </div>
+                    <div class="text-gray-500">{{ property_data.address }}</div>
+                </div>
+            </div>
+            </div>
             </form>
         {% endif %}
     </div>
-    <script>
-        function changeCurrentBid(e) {
-            currentBidDiv = document.querySelector('#current_bid')
-            currentBidDiv.textContent = `$${e.value}.00`
-        }
-    </script>
+<script>
+function changeCurrentBid(e) {
+    currentBidDiv = document.querySelector('#current_bid')
+    currentBidDiv.textContent = `$${e.value}.00`
+}
+</script>
 {% endblock %}
-
-
-
